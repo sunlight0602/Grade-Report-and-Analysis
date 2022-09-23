@@ -428,7 +428,7 @@ for student, score in student_score:
     file.write('<br><br>')
 
     # 排名
-    file.write('<div class="row"><p class="h5"><strong>應考學生整體成績排名：</strong></p><table class="table text-center table-bordered table-sm"><thead><tr class="table-secondary"><th>姓名</th><th>語文素養</th>')
+    file.write('<div class="row"><p class="h5"><strong>應考學生整體成績排名：</strong></p><table class="table text-center table-bordered table-sm"><thead><tr class="table-secondary"><th>姓名</th><th>分數</th>')
     file.write('<th>名次</th></tr></thead><tbody>')
     for rank, (student1, score1) in enumerate(student_score):
         file.write('<tr>')
@@ -590,18 +590,39 @@ for student, score, rk in student_score:
     file.write('<td>' + str(round(sum([s for _, s, _ in student_score[int(len(student_score)*0.5):]]) / (len(student_score)*0.5), 2)) + '</td>')
     file.write('<td>' + str(int(len(student_score)*0.5)) + '</td>')
     file.write('</tr>')
-    file.write('</tbody></table></div><div class="row"><p class="h5"><strong>應考學生整體成績排名：</strong></p><table class="table text-center table-bordered table-sm"><thead><tr class="table-secondary"><th>姓名</th><th>語文素養</th>')
-    # file.write('<th>寫作測驗</th>')
-    file.write('<th>名次</th></tr></thead><tbody>')
+    file.write('</tbody></table></div>')
 
-    for student1, score1, rank1 in student_score:
+    file.write('<div class="row">')
+    file.write('<p class="h5"><strong>應考學生整體成績排名：</strong></p>')
+    file.write('</div>')
+
+    file.write('<div class="row">')
+
+    file.write('<div class="col-6">')
+    file.write('<table class="table text-center table-bordered table-sm"><thead><tr class="table-secondary"><th>姓名</th><th>分數</th>')
+    file.write('<th>名次</th></tr></thead>')
+    file.write('<tbody>')
+    for student1, score1, rank1 in student_score[:8]:
         file.write('<tr>')
         file.write('<td>' + student1 + '</td>')
         file.write('<td>' + str(score1) + '</td>')
         # file.write('<td>' + str(writing_score_dict[student1]) + '</td>')
         file.write('<td>' + str(rank1) + '</td>')
         file.write('</tr>')
-    
-    file.write('</tbody></table></div><p></p></div></body></html>')
+    file.write('</tbody></table></div>') # div for col
+
+    file.write('<div class="col-6">')
+    file.write('<table class="table text-center table-bordered table-sm"><thead><tr class="table-secondary"><th>姓名</th><th>分數</th>')
+    file.write('<th>名次</th></tr></thead><tbody>')
+    for student1, score1, rank1 in student_score[8:]:
+        file.write('<tr>')
+        file.write('<td>' + student1 + '</td>')
+        file.write('<td>' + str(score1) + '</td>')
+        # file.write('<td>' + str(writing_score_dict[student1]) + '</td>')
+        file.write('<td>' + str(rank1) + '</td>')
+        file.write('</tr>')
+    file.write('</tbody></table></div>')
+    file.write('</div>') # div for row
+    file.write('</body></html>')
 
     file.close()
