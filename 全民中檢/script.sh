@@ -1,4 +1,4 @@
-pyinstaller --onefile combine.py
+pyinstaller --onefile main_windows.py
 mkdir ./dist/output_files
 cp -R ./input_files ./dist/input_files
 
