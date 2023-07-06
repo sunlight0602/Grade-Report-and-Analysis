@@ -1,22 +1,87 @@
 import pandas as pd
 import xlsxwriter
-from draw_fig import draw_fig, draw_teacher_fig
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Set matplotlib parameters
+plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei'] # 用於正常顯示中文
+plt.rcParams['axes.unicode_minus'] = False # 用於正常顯示符號
+plt.style.use('ggplot') # 使用ggplot的繪圖風格，這個類似於美化了
 
 # File path:
-output_path = './output_files/'
-input_path = './input_files/'
-# output_path = '.\\output_files\\'
-# input_path = ".\\input_files\\"
+output_path = '.\\output_files\\'
+input_path = ".\\input_files\\"
+
+def draw_student_fig(student_name, class_dict, student_dict):
+    """
+    student_name (str): name of the student
+    class_dict (dict): class: amount of questions in the class
+    student_dict (dict): class: amount of questions in the class, which is written correctly
+    """
+    values = []
+    for class_ in class_dict.keys():
+        values.append(student_dict[class_] / class_dict[class_] * 100)
+    
+    angles = np.linspace(0, 2*np.pi, len(values), endpoint=False) # 設置每個數據點的顯示位置，在雷達圖上用角度表示
+
+    # 拼接數據首尾，使圖形中線條封閉
+    values = np.concatenate((values,[values[0]]))
+    angles = np.concatenate((angles,[angles[0]]))
+
+    # 繪圖
+    fig = plt.figure()
+    ax = fig.add_subplot(111, polar=True)
+    ax.plot(angles, values, 'o-', linewidth=2) # 繪製折線圖
+    ax.fill(angles, values, alpha=0.25) # 填充顏色
+
+    # 設置圖標上的角度劃分刻度，爲每個數據點處添加標籤
+    ax.set_thetagrids(angles=(0,60,120,180,240,300), labels=class_dict.keys(), fontsize=14)
+
+    ax.set_ylim(0, 100) # 設置雷達圖的範圍
+    # plt.title(student_name + "的考卷分析") # 添加標題
+    ax.grid(True) # 添加網格線
+
+    plt.savefig(output_path + student_name + ".png")
+
+    return
+
+def draw_teacher_fig(wrong_dict, num_of_student, class_dict):
+    values = []
+    for class_, amount in wrong_dict.items():
+        values.append(round((class_dict[class_]*num_of_student - amount) / num_of_student / class_dict[class_] * 100, 2))
+
+    # print(values)
+    angles = np.linspace(0, 2*np.pi, len(values), endpoint=False) # 設置每個數據點的顯示位置，在雷達圖上用角度表示
+
+    # 拼接數據首尾，使圖形中線條封閉
+    values = np.concatenate((values,[values[0]]))
+    angles = np.concatenate((angles,[angles[0]]))
+
+    # 繪圖
+    fig = plt.figure()
+    ax = fig.add_subplot(111, polar=True)
+    ax.plot(angles, values, 'o-', linewidth=2) # 繪製折線圖
+    ax.fill(angles, values, alpha=0.25) # 填充顏色
+
+    # 設置圖標上的角度劃分刻度，爲每個數據點處添加標籤
+    ax.set_thetagrids(angles=(0,60,120,180,240,300), labels=wrong_dict.keys(), fontsize=14)
+
+    ax.set_ylim(0, 100) # 設置雷達圖的範圍
+    ax.grid(True) # 添加網格線
+
+    plt.savefig(output_path + "給老師看的.png")
+
+
 
 # Read files
 exam_paper = pd.read_excel(input_path + "閱讀素養題目.xlsx")
 student_answer = pd.read_excel(input_path + "學生閱讀素養答案.xlsx", converters={'學生/題號': int})
-writing_score = pd.read_excel(input_path + "寫作測驗分數.xlsx")
+# writing_score = pd.read_excel(input_path + "寫作測驗分數.xlsx")
 bubbles = pd.read_excel(input_path + "學生劃卡狀況.xlsx")
 writing_score_dict = {}
 bubbles_dict = {}
-for idx in range(len(writing_score)):
-    writing_score_dict[writing_score.iloc[idx]["學生"]] = writing_score.iloc[idx]["寫作分數"]
+# for idx in range(len(writing_score)):
+#     writing_score_dict[writing_score.iloc[idx]["學生"]] = writing_score.iloc[idx]["寫作分數"]
 for idx in range(len(bubbles)):
     bubbles_dict[bubbles.iloc[idx]["學生"]] = []
     bubbles_dict[bubbles.iloc[idx]["學生"]].append(bubbles.iloc[idx]["劃卡狀況1"])
@@ -57,18 +122,18 @@ headers = ["題號", "單元名稱", "答題狀況"]
 for class_ in class_dict.keys():
     headers.append(class_) # ["題號", "單元名稱", "答題狀況", "文字", "修辭"...]
 
-print(student_answer)
-print(student_answer["黃子恩"][49])
-print(class_dict)
+# print(student_answer)
+# print(student_answer["黃子恩"][49])
+# print(class_dict)
 
-print(student_answer.size)
+assert student_answer.shape[0] == len(answers)
 
 student_score = []
 for i in range(num_of_student):
     student_name = student_answer.columns[i+1]
     print('學生名稱:', student_name)
 
-    workbook = xlsxwriter.Workbook(output_path + student_name + '.xlsx')
+    workbook = xlsxwriter.Workbook(output_path + 'static/' + student_name + '.xlsx')
     worksheet = workbook.add_worksheet()
 
     for idx, header in enumerate(headers):
@@ -107,11 +172,11 @@ for i in range(num_of_student):
     # =====
 
     print(student_dict[student_name])
-    draw_fig(student_name, class_dict, student_dict[student_name])
+    draw_student_fig(student_name, class_dict, student_dict[student_name])
 
 # ====
 
-workbook = xlsxwriter.Workbook(output_path + '給老師看的.xlsx')
+workbook = xlsxwriter.Workbook(output_path + 'static/' + '給老師看的.xlsx')
 worksheet = workbook.add_worksheet()
 worksheet.write(0, 0, "題號")
 worksheet.write(0, 1, "單元名稱")
@@ -168,7 +233,7 @@ for class_, (question, wrong_num) in zip(classes, question_dict.items()):
 
 workbook.close()
 
-# ======= Make HTML =======
+# ======= Make student HTML =======
 
 # Get first three places:
 first_place = student_score[0][1]
@@ -196,7 +261,7 @@ time = exam_paper["第幾次"][0]  # 第 1 次全民中檢仿真模擬考
 level = exam_paper["級別"][0]  # 級別：初等
 date = exam_paper["測驗日期"][0]  # 級別：初等
 for student, score in student_score:
-    file = open(student+"_html.html", "w", encoding='utf-8')
+    file = open(output_path + student + ".html", "w", encoding='utf-8')
 
     file.write('<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>煜婷國文</title><link rel="stylesheet" href="./assets/css/bootstrap.min.css"></head><body><div class="container"><div class="row">')
     file.write('<div class="col-8" style="padding-left: 0px !important">')
@@ -204,20 +269,20 @@ for student, score in student_score:
     file.write('</div><div class="col-4 text-right" style="padding-right: 0px !important">')
     file.write('<p class="h6">測驗日期：' + date.strftime("%Y/%m/%d") + '</p>')
     file.write('<p class="h6">檢定級別：' + level + '</p>')
-    file.write('</div></div><div class="row"><p class="h5"><strong>總體成績概要：</strong></p><table class="table text-center table-bordered table-sm"><thead><tr class="table-secondary"><th>姓名</th><th>語文素養</th><th>寫作測驗</th><th>檢定結果</th><th>畫卡狀況</th></tr></thead><tbody><tr>')
+    file.write('</div></div><div class="row"><p class="h5"><strong>總體成績概要：</strong></p><table class="table text-center table-bordered table-sm"><thead><tr class="table-secondary"><th>姓名</th><th>語文素養</th><th>檢定結果</th><th>畫卡狀況</th></tr></thead><tbody><tr>')
     file.write('<td class="align-middle">' + student + '</td>')
     file.write('<td class="align-middle">' + str(score) + '</td>')
-    file.write('<td class="align-middle">' + str(writing_score_dict[student]) + '</td>')
+    # file.write('<td class="align-middle">' + str(writing_score_dict[student]) + '</td>')
     if score >= 66:
         file.write('<td class="align-middle">語文素養 ☑ 通過 ☐ 未通過<br>')
     else:
         file.write('<td class="align-middle">語文素養 ☐ 通過 ☑ 未通過<br>')
-    if writing_score_dict[student] == "本次未考":
-        file.write('寫作測驗 ☑ 本次未考</td>')
-    elif writing_score_dict[student] >= 4:
-        file.write('寫作測驗 ☑ 通過 ☐ 未通過</td>')
-    else:
-        file.write('寫作測驗 ☐ 通過 ☑ 未通過</td>')
+    # if writing_score_dict[student] == "本次未考":
+    #     file.write('寫作測驗 ☑ 本次未考</td>')
+    # elif writing_score_dict[student] >= 4:
+    #     file.write('寫作測驗 ☑ 通過 ☐ 未通過</td>')
+    # else:
+    #     file.write('寫作測驗 ☐ 通過 ☑ 未通過</td>')
     file.write('<td class="align-middle"><div class="row align-middle"><div class="col align-middle">')
 
     if "正確標準" in bubbles_dict[student]:
@@ -248,7 +313,7 @@ for student, score in student_score:
     else:
         file.write('☐ 擦拭不淨')
 
-    file.write('</div></row></td></tr></tbody></table><p>檢定通過標準：語文素養達 66 分以上，寫作測驗達 4 級分以上</p></div><div class="row"><p class="h5"><strong>語文素養答題狀況：</strong></p><table class="table table-bordered text-center table-sm"><tbody><tr class="table-secondary">')
+    file.write('</div></row></td></tr></tbody></table><p>檢定通過標準：語文素養達 66 分以上</p></div><div class="row"><p class="h5"><strong>語文素養答題狀況：</strong></p><table class="table table-bordered text-center table-sm"><tbody><tr class="table-secondary">')
     for i in range(1,26): # 題號
         file.write('<td>' + str(i) +'</td>')
     file.write('</tr><tr>') 
@@ -274,7 +339,7 @@ for student, score in student_score:
             file.write('<td>.</td>')
         else:
             file.write('<td>' + student_answer[student][i] + '</td>')
-    file.write('</tr></tbody></table></div><div class="row"><p class="h5"><strong>各向度分析：</strong></p><div class="row"><div class="col-6"><img class="img-fluid img-sm"  src=".\\output_files\\' + student + '.png">')
+    file.write('</tr></tbody></table></div><div class="row"><p class="h5"><strong>各向度分析：</strong></p><div class="row"><div class="col-6"><img class="img-fluid img-sm"  src=".\\static\\' + student + '.png">')
     file.write('</div><div class="col-6"><table class="table table-bordered text-center table-sm"><tbody><thead><tr class="table-secondary"><th>評定向度</th><th>得分／總分</th><th>得分率</th></tr></thead><tbody><tr>')
     file.write('<td>形音義</td>')
     file.write('<td>' + str(student_dict[student]["形音義"]) + '/' + str(class_dict["形音義"]) + '</td>')
@@ -324,7 +389,7 @@ for student, score in student_score:
     file.write('<td>' + str(round(sum([s for _, s in student_score[int(len(student_score)*0.5):]]) / (len(student_score)*0.5), 2)) + '</td>')
     file.write('<td>' + str(int(len(student_score)*0.5)) + '</td>')
     file.write('</tr>')
-    file.write('</tbody></table></div><div class="row"><p class="h5"><strong>應考學生整體成績排名：</strong></p><table class="table text-center table-bordered table-sm"><thead><tr class="table-secondary"><th>姓名</th><th>語文素養</th><th>寫作測驗</th><th>名次</th></tr></thead><tbody>')
+    file.write('</tbody></table></div><div class="row"><p class="h5"><strong>應考學生整體成績排名：</strong></p><table class="table text-center table-bordered table-sm"><thead><tr class="table-secondary"><th>姓名</th><th>語文素養</th><th>名次</th></tr></thead><tbody>')
 
     for rank, (student1, score1) in enumerate(student_score):
         file.write('<tr>')
@@ -340,7 +405,7 @@ for student, score in student_score:
             file.write(student1[-1])
             file.write('</td>') # bug here
         file.write('<td>' + str(score1) + '</td>')
-        file.write('<td>' + str(writing_score_dict[student1]) + '</td>')
+        # file.write('<td>' + str(writing_score_dict[student1]) + '</td>')
 
         if score1 == first_place:
             file.write('<td>1</td>')
@@ -367,7 +432,7 @@ student_score.sort(key=lambda x: x[1], reverse=True)
 level = exam_paper["級別"][0]  # 級別：初等
 date = exam_paper["測驗日期"][0]  # 級別：初等
 for student, score in student_score:
-    file = open("給老師看的_html.html", "w", encoding='utf-8')
+    file = open(output_path + "老師.html", "w", encoding='utf-8')
 
     file.write('<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>煜婷國文</title><link rel="stylesheet" href="./assets/css/bootstrap.min.css"></head>')
     file.write('<body><div class="container"><div class="row">')
@@ -425,7 +490,7 @@ for student, score in student_score:
     for idx in range(26, 51): # 正確人數
         file.write('<td>' + str(num_of_student - question_dict[idx]) + '</td>')
     
-    file.write('</tr></tbody></table></div><div class="row"><p class="h5"><strong>各向度分析：</strong></p><div class="row"><div class="col-6"><img class="img-fluid img-sm"  src=".\\output_files\\給老師看的.png">')
+    file.write('</tr></tbody></table></div><div class="row"><p class="h5"><strong>各向度分析：</strong></p><div class="row"><div class="col-6"><img class="img-fluid img-sm"  src=".\\static\\給老師看的.png">')
     file.write('</div><div class="col-6"><table class="table table-bordered text-center table-sm"><tbody><thead><tr class="table-secondary"><th>評定向度</th><th>該向度題數</th><th>正確率</th></tr></thead><tbody><tr>')
     file.write('<td>形音義</td>')
     file.write('<td>' + str(class_dict["形音義"]) + ' 題</td>')
@@ -475,14 +540,33 @@ for student, score in student_score:
     file.write('<td>' + str(round(sum([s for _, s in student_score[int(len(student_score)*0.5):]]) / (len(student_score)*0.5), 2)) + '</td>')
     file.write('<td>' + str(int(len(student_score)*0.5)) + '</td>')
     file.write('</tr>')
-    file.write('</tbody></table></div><div class="row"><p class="h5"><strong>應考學生整體成績排名：</strong></p><table class="table text-center table-bordered table-sm"><thead><tr class="table-secondary"><th>姓名</th><th>語文素養</th><th>寫作測驗</th><th>名次</th></tr></thead><tbody>')
+    file.write('</tbody></table></div><div class="row"><p class="h5"><strong>應考學生整體成績排名：</strong></p><table class="table text-center table-bordered table-sm"><thead><tr class="table-secondary"><th>姓名</th><th>語文素養</th><th>名次</th></tr></thead><tbody>')
 
     for rank, (student1, score1) in enumerate(student_score):
         file.write('<tr>')
-        file.write('<td>' + student1 + '</td>')
+        if len(student1) == 3:
+            file.write('<td>' + student1[0] + 'Ｏ' + student1[2] + '</td>')
+        elif len(student1) == 2:
+            file.write('<td>' + student1[0] + 'Ｏ'  + '</td>')
+        else:
+            file.write('<td>')
+            file.write(student1[0])
+            for i in range(len(student1)-2):
+                file.write('Ｏ')
+            file.write(student1[-1])
+            file.write('</td>') # bug here
         file.write('<td>' + str(score1) + '</td>')
-        file.write('<td>' + str(writing_score_dict[student1]) + '</td>')
-        file.write('<td>' + str(rank+1) + '</td>')
+        # file.write('<td>' + str(writing_score_dict[student1]) + '</td>')
+
+        if score1 == first_place:
+            file.write('<td>1</td>')
+        elif score1 == second_place:
+            file.write('<td>2</td>')
+        elif score1 == third_place:
+            file.write('<td>3</td>')
+        else:
+            file.write('<td>' + str(rank+1) + '</td>')
+
         file.write('</tr>')
     
     file.write('</tbody></table></div><p></p></div></body></html>')
