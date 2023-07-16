@@ -250,29 +250,25 @@ def ranking(student_score):
 
     for idx, ss in enumerate(student_score[1:]):
         if ss[1] == cur_score:
+            # print("與上一位同分")
             ss = ss + (cur_rank,)
             offset += 1
         else:
+            cur_score = ss[1]
             cur_rank = cur_rank + 1
             ss = ss + (cur_rank + offset,)
+            cur_rank = cur_rank + offset
+            offset = 0
         student_score[idx+1] = ss
     return student_score
 
 student_score = ranking(student_score)
-# print(student_score)
 
-# Get first three places:
-# first_place = student_score[0][1]
-# second_place = 0
-# for _, score in student_score[1:]:
-#     second_place = score
-#     if second_place != first_place:
-#         break
-# third_place = 0
-# for _, score in student_score[1:]:
-#     third_place = score
-#     if third_place != second_place != first_place:
-#         break
+# 取得前標均標等
+pr88 = student_score[round(num_of_student*(1-0.88))-1][1]
+pr75 = student_score[round(num_of_student*(1-0.75))-1][1]
+pr50 = student_score[round(num_of_student*(1-0.5))-1][1]
+pr25 = student_score[round(num_of_student*(1-0.25))-1][1]
 
 # 打亂第四名以下的成績
 import random
@@ -398,30 +394,42 @@ for student, score, rank in student_score:
     file.write('<td>' + str(student_dict[student]["閱讀素養"]) + '/' + str(class_dict["閱讀素養"]) + '</td>')
     file.write('<td>' + str(round(student_dict[student]["閱讀素養"] / class_dict["閱讀素養"]*100, 1)) + ' % </td>')
     file.write('</tr><tr>')
-    file.write('</tbody></table></div></div></div><div class="row"><p class="h5"><strong>本梯次成績統計：</strong></p><table class="table text-center table-bordered table-sm"><thead><tr class="table-secondary"><th>項目</th><th>分數</th><th>人數</th></tr></thead><tbody>')
+    # file.write('</tbody></table></div></div></div><div class="row"><p class="h5"><strong>本梯次成績統計：</strong></p><table class="table text-center table-bordered table-sm"><thead><tr class="table-secondary"><th>項目</th><th>分數</th><th>人數</th></tr></thead><tbody>')
+    file.write('</tbody></table></div></div></div><div class="row"><p class="h5"><strong>本梯次成績統計：</strong></p><table class="table text-center table-bordered table-sm"><thead><tr class="table-secondary"><th>項目</th><th>分數</th></tr></thead><tbody>')
+
+    # file.write('<tr>')
+    # file.write('<td>本梯次成績前２％分數</td>')
+    # if int(len(student_score)*0.02) == 0:
+    #     file.write('<td>' + str(student_score[0][1]) + '</td>')
+    #     file.write('<td>1</td>')
+    # else:
+    #     file.write('<td>' + str(round(sum([s for _, s, _ in student_score[:int(len(student_score)*0.02)]]) / int(len(student_score)*0.02), 2)) + '</td>')
+    #     file.write('<td>' + str(int(len(student_score)*0.02)) + '</td>')
+    # file.write('</tr>')
     
     file.write('<tr>')
-    file.write('<td>本梯次成績前２％分數</td>')
-    if int(len(student_score)*0.02) == 0:
-        file.write('<td>' + str(student_score[0][1]) + '</td>')
-        file.write('<td>1</td>')
-    else:
-        file.write('<td>' + str(round(sum([s for _, s, _ in student_score[:int(len(student_score)*0.02)]]) / int(len(student_score)*0.02), 2)) + '</td>')
-        file.write('<td>' + str(int(len(student_score)*0.02)) + '</td>')
+    file.write('<td>頂標（位於第８８％考生之分數）</td>')
+    file.write('<td>' + str(pr88) + '</td>')
+    # file.write('<td>' + str(round(sum([s for _, s, _ in student_score[:int(len(student_score)*0.5)]]) / (len(student_score)*0.5), 2)) + '</td>')
+    # file.write('<td>' + str(int(len(student_score)*0.5)) + '</td>')
     file.write('</tr><tr>')
-    file.write('<td>高標（成績前５０％平均分數）</td>')
-    file.write('<td>' + str(round(sum([s for _, s, _ in student_score[:int(len(student_score)*0.5)]]) / (len(student_score)*0.5), 2)) + '</td>')
-    file.write('<td>' + str(int(len(student_score)*0.5)) + '</td>')
     file.write('</tr><tr>')
-    file.write('<td>均標（成績平均分數）</td>')
-    file.write('<td>' + str(round(sum([s for _, s, _ in student_score]) / len(student_score),2)) + '</td>')
+    file.write('<td>前標（位於第７５％考生之分數）</td>')
+    file.write('<td>' + str(pr75) + '</td>')
+    # file.write('<td>' + str(round(sum([s for _, s, _ in student_score[:int(len(student_score)*0.5)]]) / (len(student_score)*0.5), 2)) + '</td>')
+    # file.write('<td>' + str(int(len(student_score)*0.5)) + '</td>')
+    file.write('</tr><tr>')
+    file.write('<td>均標（位於第５０％考生之分數）</td>')
+    file.write('<td>' + str(pr50) + '</td>')
+    # file.write('<td>' + str(round(sum([s for _, s, _ in student_score]) / len(student_score),2)) + '</td>')
     # file.write('<td>' + str(len(student_score)) + '</td>')
-    file.write('<td>/</td>')
+    # file.write('<td>/</td>')
     file.write('</tr><tr>')
-    file.write('<td>低標（成績後５０％平均分數）</td>')
+    file.write('<td>後標（位於第２５％考生之分數）</td>')
+    file.write('<td>' + str(pr25) + '</td>')
     # file.write('<td>' + str(sum([s for _, s in student_score[int(len(student_score)*0.5):]]) / int(len(student_score)*0.5)) + '</td>')
-    file.write('<td>' + str(round(sum([s for _, s, _ in student_score[int(len(student_score)*0.5):]]) / (len(student_score)*0.5), 2)) + '</td>')
-    file.write('<td>' + str(int(len(student_score)*0.5)) + '</td>')
+    # file.write('<td>' + str(round(sum([s for _, s, _ in student_score[int(len(student_score)*0.5):]]) / (len(student_score)*0.5), 2)) + '</td>')
+    # file.write('<td>' + str(int(len(student_score)*0.5)) + '</td>')
     file.write('</tr>')
     file.write('</tbody></table></div><div class="row"><p class="h5"><strong>應考學生整體成績排名：</strong></p><table class="table text-center table-bordered table-sm"><thead><tr class="table-secondary"><th>姓名</th><th>語文素養</th><th>名次</th></tr></thead><tbody>')
 
@@ -546,30 +554,41 @@ for student, score, rank in student_score:
     file.write('<td>' + str(class_dict["閱讀素養"]) + ' 題</td>')
     file.write('<td>' + str(round(class_dict["閱讀素養"] - wrong_dict["閱讀素養"] / num_of_student, 2))+" 題／人")
     file.write('</tr><tr>')
-    file.write('</tbody></table></div></div></div><div class="row"><p class="h5"><strong>本梯次成績統計：</strong></p><table class="table text-center table-bordered table-sm"><thead><tr class="table-secondary"><th>項目</th><th>分數</th><th>人數</th></tr></thead><tbody>')
+    file.write('</tbody></table></div></div></div><div class="row"><p class="h5"><strong>本梯次成績統計：</strong></p><table class="table text-center table-bordered table-sm"><thead><tr class="table-secondary"><th>項目</th><th>分數</th></tr></thead><tbody>')
+    
+    # file.write('<tr>')
+    # file.write('<td>本梯次成績前２％分數</td>')
+    # if int(len(student_score)*0.02) == 0:
+    #     file.write('<td>' + str(student_score[0][1]) + '</td>')
+    #     file.write('<td>1</td>')
+    # else:
+    #     file.write('<td>' + str(round(sum([s for _, s, _ in student_score[:int(len(student_score)*0.02)]]) / int(len(student_score)*0.02), 2)) + '</td>')
+    #     file.write('<td>' + str(int(len(student_score)*0.02)) + '</td>')
+    # file.write('</tr>')
     
     file.write('<tr>')
-    file.write('<td>本梯次成績前２％分數</td>')
-    if int(len(student_score)*0.02) == 0:
-        file.write('<td>' + str(student_score[0][1]) + '</td>')
-        file.write('<td>1</td>')
-    else:
-        file.write('<td>' + str(round(sum([s for _, s, _ in student_score[:int(len(student_score)*0.02)]]) / int(len(student_score)*0.02), 2)) + '</td>')
-        file.write('<td>' + str(int(len(student_score)*0.02)) + '</td>')
+    file.write('<td>頂標（位於第８８％考生之分數）</td>')
+    file.write('<td>' + str(pr88) + '</td>')
+    # file.write('<td>' + str(round(sum([s for _, s, _ in student_score[:int(len(student_score)*0.5)]]) / (len(student_score)*0.5), 2)) + '</td>')
+    # file.write('<td>' + str(int(len(student_score)*0.5)) + '</td>')
     file.write('</tr><tr>')
-    file.write('<td>高標（成績前５０％平均分數）</td>')
-    file.write('<td>' + str(round(sum([s for _, s, _ in student_score[:int(len(student_score)*0.5)]]) / (len(student_score)*0.5), 2)) + '</td>')
-    file.write('<td>' + str(int(len(student_score)*0.5)) + '</td>')
     file.write('</tr><tr>')
-    file.write('<td>均標（成績平均分數）</td>')
-    file.write('<td>' + str(round(sum([s for _, s, _ in student_score]) / len(student_score),2)) + '</td>')
+    file.write('<td>前標（位於第７５％考生之分數）</td>')
+    file.write('<td>' + str(pr75) + '</td>')
+    # file.write('<td>' + str(round(sum([s for _, s, _ in student_score[:int(len(student_score)*0.5)]]) / (len(student_score)*0.5), 2)) + '</td>')
+    # file.write('<td>' + str(int(len(student_score)*0.5)) + '</td>')
+    file.write('</tr><tr>')
+    file.write('<td>均標（位於第５０％考生之分數）</td>')
+    file.write('<td>' + str(pr50) + '</td>')
+    # file.write('<td>' + str(round(sum([s for _, s, _ in student_score]) / len(student_score),2)) + '</td>')
     # file.write('<td>' + str(len(student_score)) + '</td>')
-    file.write('<td>/</td>')
+    # file.write('<td>/</td>')
     file.write('</tr><tr>')
-    file.write('<td>低標（成績後５０％平均分數）</td>')
+    file.write('<td>後標（位於第２５％考生之分數）</td>')
+    file.write('<td>' + str(pr25) + '</td>')
     # file.write('<td>' + str(sum([s for _, s in student_score[int(len(student_score)*0.5):]]) / int(len(student_score)*0.5)) + '</td>')
-    file.write('<td>' + str(round(sum([s for _, s, _ in student_score[int(len(student_score)*0.5):]]) / (len(student_score)*0.5), 2)) + '</td>')
-    file.write('<td>' + str(int(len(student_score)*0.5)) + '</td>')
+    # file.write('<td>' + str(round(sum([s for _, s, _ in student_score[int(len(student_score)*0.5):]]) / (len(student_score)*0.5), 2)) + '</td>')
+    # file.write('<td>' + str(int(len(student_score)*0.5)) + '</td>')
     file.write('</tr>')
     file.write('</tbody></table></div><div class="row"><p class="h5"><strong>應考學生整體成績排名：</strong></p><table class="table text-center table-bordered table-sm"><thead><tr class="table-secondary"><th>姓名</th><th>語文素養</th><th>名次</th></tr></thead><tbody>')
 
