@@ -438,6 +438,9 @@ for student, score, rank in student_score:
         file.write('<tr><td>')
         if len(student1) == 1:
             file.write('Ｏ')
+        elif len(student1) == 2:
+            file.write(student1[0])
+            file.write('Ｏ')
         else:
             file.write(student1[0])
             for char in student1[1:-1]:
@@ -597,6 +600,9 @@ for student, score, rank in student_score:
         # 遮蔽名稱
         file.write('<tr><td>')
         if len(student1) == 1:
+            file.write('Ｏ')
+        elif len(student1) == 2:
+            file.write(student1[0])
             file.write('Ｏ')
         else:
             file.write(student1[0])
