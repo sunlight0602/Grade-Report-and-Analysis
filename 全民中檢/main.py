@@ -273,7 +273,7 @@ pr25 = student_score[round(num_of_student*(1-0.25))-1][1]
 # 打亂第四名以下的成績
 import random
 import math
-one_third_idx = math.ceil(num_of_student / 3) - 1
+one_third_idx = int(num_of_student / 3) - 1
 one_third_rank = student_score[one_third_idx][2]
 for idx, (name, score, rank) in enumerate(student_score):
     if rank == one_third_rank and student_score[idx+1][2] != one_third_rank:
