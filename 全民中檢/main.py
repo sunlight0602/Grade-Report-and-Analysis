@@ -170,10 +170,10 @@ for i in range(num_of_student):
     for idx, class_  in enumerate(class_dict.keys()):
         worksheet.write(1, 3+idx, str(student_dict[student_name][class_]) + '/' + str(class_dict[class_]))
     
-    print('分數:', int(correct / num_of_question * 100))
+    print('分數:', round(correct / num_of_question * 100))
     workbook.close()
 
-    student_score.append((student_name, int(correct / num_of_question * 100)))
+    student_score.append((student_name, round(correct / num_of_question * 100)))
 
     # =====
 
