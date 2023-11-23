@@ -1,83 +1,39 @@
+import collections
+import numpy
+import os
 import pandas as pd
 import xlsxwriter
-import pandas as pd
-import matplotlib.pyplot as plt
-import numpy as np
-import os
 
 # File path:
 output_path = os.path.join(".", "output_files")
 input_path = os.path.join(".", "input_files")
 static_path = os.path.join(output_path, "static")
 
-# ======= for figure ======
-
-# Set matplotlib parameters
-plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei', 'KaiTi', 'SimHei', 'FangSong', 'Arial Unicode MS'] # 用於正常顯示中文
-plt.rcParams['axes.unicode_minus'] = False # 用於正常顯示符號
-plt.style.use('ggplot') # 使用ggplot的繪圖風格，這個類似於美化了
-
-def draw_student_fig(student_name, class_dict, student_dict):
-    """
-    student_name (str): name of the student
-    class_dict (dict): class: amount of questions in the class
-    student_dict (dict): class: amount of questions in the class, which is written correctly
-    """
-    values = []
-    for class_ in class_dict.keys():
-        values.append(student_dict[class_] / class_dict[class_] * 100)
-    
-    angles = np.linspace(0, 2*np.pi, len(values), endpoint=False) # 設置每個數據點的顯示位置，在雷達圖上用角度表示
-
-    # 拼接數據首尾，使圖形中線條封閉
-    values = np.concatenate((values,[values[0]]))
-    angles = np.concatenate((angles,[angles[0]]))
-
-    # 繪圖
-    fig = plt.figure()
-    ax = fig.add_subplot(111, polar=True)
-    ax.plot(angles, values, 'o-', linewidth=2) # 繪製折線圖
-    ax.fill(angles, values, alpha=0.25) # 填充顏色
-
-    # 設置圖標上的角度劃分刻度，爲每個數據點處添加標籤
-    ax.set_thetagrids(angles=(0,60,120,180,240,300), labels=class_dict.keys(), fontsize=14)
-
-    ax.set_ylim(0, 100) # 設置雷達圖的範圍
-    # plt.title(student_name + "的考卷分析") # 添加標題
-    ax.grid(True) # 添加網格線
-
-    plt.savefig(os.path.join(static_path, student_name+".png"))
-
-    return
-
-def draw_teacher_fig(wrong_dict, num_of_student, class_dict):
-    values = []
-    for class_, amount in wrong_dict.items():
-        values.append(round((class_dict[class_]*num_of_student - amount) / num_of_student / class_dict[class_] * 100, 2))
-
-    # print(values)
-    angles = np.linspace(0, 2*np.pi, len(values), endpoint=False) # 設置每個數據點的顯示位置，在雷達圖上用角度表示
-
-    # 拼接數據首尾，使圖形中線條封閉
-    values = np.concatenate((values,[values[0]]))
-    angles = np.concatenate((angles,[angles[0]]))
-
-    # 繪圖
-    fig = plt.figure()
-    ax = fig.add_subplot(111, polar=True)
-    ax.plot(angles, values, 'o-', linewidth=2) # 繪製折線圖
-    ax.fill(angles, values, alpha=0.25) # 填充顏色
-
-    # 設置圖標上的角度劃分刻度，爲每個數據點處添加標籤
-    ax.set_thetagrids(angles=(0,60,120,180,240,300), labels=wrong_dict.keys(), fontsize=14)
-
-    ax.set_ylim(0, 100) # 設置雷達圖的範圍
-    ax.grid(True) # 添加網格線
-
-    # plt.savefig(output_path + "給老師看的.png")
-    plt.savefig(os.path.join(static_path, "給老師看的.png"))
-
 # ===== main =====
+
+# Read files
+# TODO: read in file name
+pg1 = pd.read_excel(os.path.join(input_path, "1117_第１次全民中檢仿真模擬考.xlsx"), sheet_name='題目與答案')
+pg2 = pd.read_excel(os.path.join(input_path, "1117_第１次全民中檢仿真模擬考.xlsx"), sheet_name='學生作答')
+pg3 = pd.read_excel(os.path.join(input_path, "1117_第１次全民中檢仿真模擬考.xlsx"), sheet_name='學生畫卡')
+
+# Read pg1
+exam = {}
+for idx, prob, clas, ans in zip(list(pg1['題號']), list(pg1['題目']), list(pg1['單元名稱']), list(pg1['解答'])):
+    exam['problems'].append([idx, prob, clas, ans]) # 這個要存jsonline嗎
+exam['title'] = pg1['標題']
+exam['level'] = pg1['級別']
+exam['date'] = pg1['測驗日期']
+
+# Read pg2 and pg3
+student = collections.defaultdict(dict)
+_, *names = pg2.columns
+for name in names:
+    student[name]['answers'] = []
+    student[name]['scan'] = [s for s in list(pg3[name]) if not pd.isnull(s)]
+    for i, ans in zip(pg2['學生／題號'], pg2[name]):
+        student[name]['answers'].append([i, ans])
+        
 
 # Read files
 exam_paper = pd.read_excel(os.path.join(input_path, "閱讀素養題目.xlsx"))
