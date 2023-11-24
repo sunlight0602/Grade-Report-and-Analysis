@@ -21,7 +21,6 @@ class Info:
         self.__read_excel(file_name)
         self.rank: Rank
         
-    # private
     def __read_excel(self, file_name):
         pages = pd.read_excel(os.path.join(Info.input_path, file_name), sheet_name=None)
         self.__read_pg1(pages['題目與答案'])
@@ -75,6 +74,3 @@ class Info:
             student.analyze_error()
     
         self.rank = Rank(self.students)
-
-
-

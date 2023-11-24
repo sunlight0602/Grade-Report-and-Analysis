@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-from dataclasses import dataclass, field
+from StudentAnswerVO import StudentAnswerVO
+from ErrorAnalysisVO import ErrorAnalysisVO
 
 
 # Set matplotlib parameters
@@ -56,23 +57,5 @@ class Student:
         ax.set_ylim(0, 100) # 設置雷達圖的範圍
         ax.grid(True) # 添加網格線
 
-        plt.savefig(os.path.join(self.output_path, self.name + ".png"))
-        self.figure_path = os.path.join(self.output_path, self.name + ".png")
-
-
-@dataclass
-class StudentAnswerVO:
-    quest_num: int
-    answer: str
-    correction: str = field(init=False)
-
-
-@dataclass
-class ErrorAnalysisVO:
-    correct: int = 0
-    total: int = 0
-    percentage: decimal.Decimal = None
-
-    def calculate_percentage(self):
-        self.percentage = round(decimal.Decimal(str(self.correct / self.total)) * 100, 2) 
-
+        plt.savefig(os.path.join(self.output_path, 'static', self.name + ".png"))
+        self.figure_path = os.path.join('.', 'static', self.name + ".png")

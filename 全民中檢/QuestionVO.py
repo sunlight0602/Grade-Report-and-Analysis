@@ -9,4 +9,3 @@ class QuestionVO:
     description: str
     category: str
     answer: str
-    

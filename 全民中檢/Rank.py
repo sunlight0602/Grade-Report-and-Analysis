@@ -3,8 +3,8 @@ import decimal
 class Rank:
     def __init__(self, students) -> None:
         self.students = students
-        self.sorted_rank: list = self.calculate_rank(masked=False, random=False)
-        self.__calculate_pr()
+        # self.sorted_rank: list = self.calculate_rank(masked=False, random=False)
+        self.sorted_rank: list = None
         self.pr88: decimal.Decimal
         self.pr75: decimal.Decimal
         self.pr50: decimal.Decimal
@@ -32,7 +32,8 @@ class Rank:
                 scores[idx].append(cur_rank + offset)
                 cur_rank += offset
                 offset = 0
-        return scores
+        self.sorted_rank = scores
+        self.__calculate_pr()
     
     def __calculate_pr(self):
         # 取得前標均標等
