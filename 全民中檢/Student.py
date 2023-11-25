@@ -1,12 +1,12 @@
-import collections
 import decimal
-import matplotlib.pyplot as plt
-import numpy as np
 import os
 
-from StudentAnswerVO import StudentAnswerVO
-from ErrorAnalysisVO import ErrorAnalysisVO
+import collections
+import matplotlib.pyplot as plt
+import numpy as np
 
+from ErrorAnalysisVO import ErrorAnalysisVO
+from StudentAnswerVO import StudentAnswerVO
 
 # Set matplotlib parameters
 plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei', 'KaiTi', 'SimHei', 'FangSong', 'Arial Unicode MS'] # 用於正常顯示中文

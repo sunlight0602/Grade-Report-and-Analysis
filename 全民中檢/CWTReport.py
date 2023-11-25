@@ -1,10 +1,13 @@
+import decimal
 import os
+
+import matplotlib.pyplot as plt
+import numpy as np
+from jinja2 import Template
+
 from Info import Info
 from Student import Student
-from jinja2 import Template
-import decimal
-import numpy as np
-import matplotlib.pyplot as plt
+
 
 class CWTReport: # composition from Both Info and Student
     output_path = os.path.join(".", "output_files")

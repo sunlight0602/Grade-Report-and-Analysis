@@ -1,11 +1,11 @@
-import collections
-import numpy
-import os
-import pandas as pd
-from QuestionVO import QuestionVO
-from Student import Student, StudentAnswerVO
-from Rank import Rank
 import decimal
+import os
+
+import pandas as pd
+
+from QuestionVO import QuestionVO
+from Rank import Rank
+from Student import Student, StudentAnswerVO
 
 class Info:
     input_path = os.path.join(".", "input_files")
