@@ -1,5 +1,0 @@
-pandas
-xlsxwriter
-matplotlib
-openpyxl
-pip install pyinstaller

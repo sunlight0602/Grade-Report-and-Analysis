@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>煜婷國文</title>
+    <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-8" style="padding-left: 0px !important">
+                <p class="h2"><strong>煜婷國文<br>{{ title }}</strong></p>
+            </div>
+            <div class="col-4 text-right" style="padding-right: 0px !important">
+                <p class="h6">測驗日期：{{ date }} </p>
+                <p class="h6">檢定級別：{{ level }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <p class="h5"><strong>總體成績概要：</strong></p>
+            <table class="table text-center table-bordered table-sm">
+                <thead>
+                    <tr class="table-secondary">
+                        <th>姓名</th>
+                        <th>語文素養</th>
+                        <th>檢定結果</th>
+                        <th>畫卡狀況</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="align-middle">{{ name }}</td>
+                        <td class="align-middle">{{ score }}</td>
+                        {% if score >= 66 %}
+                        <td class="align-middle">語文素養 ☑ 通過 ☐ 未通過<br>
+                            {% else %}
+                        <td class="align-middle">語文素養 ☐ 通過 ☑ 未通過<br>
+                            {% endif %}
+                        <td class="align-middle">
+                            <div class="row align-middle">
+                                <div class="col align-middle">
+                                    {% if '正確標準' in conditions %}
+                                    ☑ 正確標準<br>
+                                    {% else %}
+                                    ☐ 正確標準<br>
+                                    {% endif %}
+
+                                    {% if '顏色太深' in conditions %}
+                                    ☑ 顏色太深<br>
+                                    {% else %}
+                                    ☐ 顏色太深<br>
+                                    {% endif %}
+
+                                    {% if '顏色太淺' in conditions %}
+                                    ☑ 顏色太淺
+                                    {% else %}
+                                    ☐ 顏色太淺
+                                    {% endif %}
+
+                                </div>
+                                <div class="col align-middle">
+                                    {% if '凸出格外' in conditions %}
+                                    ☑ 凸出格外<br>
+                                    {% else %}
+                                    ☐ 凸出格外<br>
+                                    {% endif %}
+
+                                    {% if '未塗滿格' in conditions %}
+                                    ☑ 未塗滿格<br>
+                                    {% else %}
+                                    ☐ 未塗滿格<br>
+                                    {% endif %}
+
+                                    {% if '擦拭不淨' in conditions %}
+                                    ☑ 擦拭不淨
+                                    {% else %}
+                                    ☐ 擦拭不淨
+                                    {% endif %}
+                                </div>
+                                </row>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>檢定通過標準：語文素養達 66 分以上</p>
+        </div>
+        <div class="row">
+            <p class="h5"><strong>語文素養答題狀況：</strong></p>
+            <table class="table table-bordered text-center table-sm">
+                <tbody>
+                    <tr class="table-secondary">
+                        {% for i in range(1,26) %}
+                        <td>{{i}}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        {% for q_ans in q_answers[:25] %}
+                        <td>{{q_ans}}</td>
+                        {% endfor %}
+                    </tr>
+
+                    <tr>
+                        {% for s_ans in s_answers[:25] %}
+                        <td>{{s_ans}}</td>
+                        {% endfor %}
+                    </tr>
+
+                    <tr class="table-secondary">
+                        {% for i in range(26,51) %}
+                        <td>{{i}}</td>
+                        {% endfor %}
+                    </tr>
+
+                    <tr>
+                        {% for q_ans in q_answers[25:] %}
+                        <td>{{q_ans}}</td>
+                        {% endfor %}
+                    </tr>
+
+                    <tr>
+                        {% for s_ans in s_answers[25:] %}
+                        <td>{{s_ans}}</td>
+                        {% endfor %}
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <p class="h5"><strong>各向度分析：</strong></p>
+            <div class="row">
+                <div class="col-6"><img class="img-fluid img-sm" src="{{ fig_path }}"></div>
+                    <div class="col-6">
+                        <table class="table table-bordered text-center table-sm">
+                            <tbody>
+                                <thead>
+                                    <tr class="table-secondary">
+                                        <th>評定向度</th>
+                                        <th>得分／總分</th>
+                                        <th>得分率</th>
+                                    </tr>
+                                </thead>
+                            <tbody>
+                                {% for cate, err in error_analysis.items() %}
+                                <tr>
+                                    <td>{{ cate }}</td>
+                                    <td>{{ err.correct }} / {{ err.total }}</td>
+                                    <td>{{ err.percentage }} %</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <p class="h5"><strong>本梯次成績統計：</strong></p>
+                <table class="table text-center table-bordered table-sm">
+                    <thead>
+                        <tr class="table-secondary">
+                            <th>項目</th>
+                            <th>分數</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>頂標（位於第８８％考生之分數）</td>
+                            <td>{{ pr88 }}</td>
+                        </tr>
+                        <tr>
+                            <td>前標（位於第７５％考生之分數）</td>
+                            <td>{{ pr75 }}</td>
+                        </tr>
+                        <tr>
+                            <td>均標（位於第５０％考生之分數）</td>
+                            <td>{{ pr50 }}</td>
+                        </tr>
+                        <tr>
+                            <td>後標（位於第２５％考生之分數）</td>
+                            <td>{{ pr25 }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div><br><br>
+            <div class="row">
+                <p class="h5"><strong>應考學生整體成績排名：</strong></p>
+                <table class="table text-center table-bordered table-sm">
+                    <thead>
+                        <tr class="table-secondary">
+                            <th>姓名</th>
+                            <th>語文素養</th>
+                            <th>名次</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for name, score, rank in ranking %}
+                        <tr>
+                            <td>{{ name }}</td>
+                            <td>{{ score }}</td>
+                            <td>{{ rank }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <p></p>
+        </div>
+</body>
+
+</html>
