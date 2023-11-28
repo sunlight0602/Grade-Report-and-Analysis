@@ -5,13 +5,10 @@ import collections
 import matplotlib.pyplot as plt
 import numpy as np
 
-from ErrorAnalysisVO import ErrorAnalysisVO
-from StudentAnswerVO import StudentAnswerVO
+from .ErrorAnalysisVO import ErrorAnalysisVO
+from .StudentAnswerVO import StudentAnswerVO
+from .config import set_matplotlib_params
 
-# Set matplotlib parameters
-plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei', 'KaiTi', 'SimHei', 'FangSong', 'Arial Unicode MS'] # 用於正常顯示中文
-plt.rcParams['axes.unicode_minus'] = False # 用於正常顯示符號
-plt.style.use('ggplot') # 使用ggplot的繪圖風格，這個類似於美化了
 
 class Student:
     output_path = os.path.join(".", "output_files")
@@ -38,6 +35,7 @@ class Student:
             error.calculate_percentage()
 
     def draw_figure(self):
+        set_matplotlib_params()
         values = [err.percentage for err in self.error_analysis.values()]        
         angles = np.linspace(0, 2 * np.pi, len(values), endpoint=False) # 設置每個數據點的顯示位置，在雷達圖上用角度表示
 

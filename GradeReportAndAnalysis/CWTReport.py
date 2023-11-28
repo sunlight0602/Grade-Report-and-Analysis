@@ -3,10 +3,12 @@ import os
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pkg_resources
 from jinja2 import Template
 
-from Info import Info
-from Student import Student
+from .Info import Info
+from .Student import Student
+from .config import set_matplotlib_params
 
 
 class CWTReport: # composition from Both Info and Student
@@ -16,10 +18,16 @@ class CWTReport: # composition from Both Info and Student
         self.student: Student = student
         self.info:Info = info
         self.report = None
+
+    def open_template(self, file_name):
+        path = os.path.join('templates', file_name)
+        template_path = pkg_resources.resource_filename('GradeReportAndAnalysis', path)
+        with open(template_path, 'r', encoding='utf-8') as file:
+            template = file.read()
+        return template
     
-    def generate_student_reports(self):
-        with open('student_report_template.html', 'r') as file:
-            template = Template(file.read())
+    def generate_student_report(self):
+        template = Template(self.open_template('student_report_template.html'))
         self.info.rank.calculate_rank(masked=True, random=True)
         
         self.student.draw_figure()
@@ -61,6 +69,8 @@ class CWTReport: # composition from Both Info and Student
         return correct, [round(decimal.Decimal(str(num / n)) * 100) for num in correct]
     
     def get_teacher_figure(self):
+        set_matplotlib_params()
+
         n = len(self.info.students)
         corrects, quest_total = [0] * len(self.student.error_analysis), [0] * len(self.student.error_analysis)
         for student in self.info.students:
@@ -94,11 +104,10 @@ class CWTReport: # composition from Both Info and Student
         plt.savefig(os.path.join(self.output_path, 'static', '老師.png'))
         return os.path.join('.', 'static', '老師.png'), average_corr_each_student
 
-
-
     def generate_teacher_report(self):
-        with open('teacher_report_template.html', 'r') as file:
-            template = Template(file.read())
+        template = Template(self.open_template('teacher_report_template.html'))
+        # with open('teacher_report_template.html', 'r') as file:
+        #     template = Template(file.read())
         
         self.info.rank.calculate_rank(masked=False, random=False)
         correct_num, acc = self.get_accuracy_for_each_question()
