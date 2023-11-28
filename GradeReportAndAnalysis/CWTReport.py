@@ -1,14 +1,12 @@
 import decimal
 import os
 
-import matplotlib.pyplot as plt
-import numpy as np
 import pkg_resources
 from jinja2 import Template
 
+from .Figure import Figure
 from .Info import Info
 from .Student import Student
-from .config import set_matplotlib_params
 
 
 class CWTReport: # composition from Both Info and Student
@@ -43,7 +41,7 @@ class CWTReport: # composition from Both Info and Student
             q_answers = [question.answer for question in self.info.questions],
             s_answers = [answer.correction for answer in self.student.answers],
 
-            fig_path = self.student.figure_path,
+            fig_path = self.student.figure.path,
             error_analysis = self.student.error_analysis,
 
             pr88 = self.info.rank.pr88,
@@ -69,8 +67,6 @@ class CWTReport: # composition from Both Info and Student
         return correct, [round(decimal.Decimal(str(num / n)) * 100) for num in correct]
     
     def get_teacher_figure(self):
-        set_matplotlib_params()
-
         n = len(self.info.students)
         corrects, quest_total = [0] * len(self.student.error_analysis), [0] * len(self.student.error_analysis)
         for student in self.info.students:
@@ -83,36 +79,16 @@ class CWTReport: # composition from Both Info and Student
         for corr, q_total in zip(corrects, quest_total):
             values.append(round(decimal.Decimal(str(corr / q_total)) * 100))         
 
-        angles = np.linspace(0, 2*np.pi, len(values), endpoint=False) # 設置每個數據點的顯示位置，在雷達圖上用角度表示
+        figure = Figure(name='老師', values=values, labels=self.student.error_analysis.keys())
+        return figure.path, average_corr_each_student
 
-        # 拼接數據首尾，使圖形中線條封閉
-        values = np.concatenate((values,[values[0]]))
-        angles = np.concatenate((angles,[angles[0]]))
-
-        # 繪圖
-        fig = plt.figure()
-        ax = fig.add_subplot(111, polar=True)
-        ax.plot(angles, values, 'o-', linewidth=2) # 繪製折線圖
-        ax.fill(angles, values, alpha=0.25) # 填充顏色
-
-        # 設置圖標上的角度劃分刻度，爲每個數據點處添加標籤
-        ax.set_thetagrids(angles=(0,60,120,180,240,300), labels=self.student.error_analysis.keys(), fontsize=14)
-
-        ax.set_ylim(0, 100) # 設置雷達圖的範圍
-        ax.grid(True) # 添加網格線
-
-        plt.savefig(os.path.join(self.output_path, 'static', '老師.png'))
-        return os.path.join('.', 'static', '老師.png'), average_corr_each_student
 
     def generate_teacher_report(self):
         template = Template(self.open_template('teacher_report_template.html'))
-        # with open('teacher_report_template.html', 'r') as file:
-        #     template = Template(file.read())
         
         self.info.rank.calculate_rank(masked=False, random=False)
         correct_num, acc = self.get_accuracy_for_each_question()
         teacher_fig_path, avg_each_std = self.get_teacher_figure()
-
 
         self.report = template.render(
             title = self.info.title,
