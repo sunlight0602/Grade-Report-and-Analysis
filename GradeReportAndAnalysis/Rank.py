@@ -14,11 +14,10 @@ class Rank:
         scores = [[student.masked_name if masked else student.name, student.score] for student in self.students]
         scores.sort(key=lambda x: x[1], reverse=True)
 
-        cur_score, cur_rank, offset = scores[0][0], 1, 0
-
+        cur_score, cur_rank, offset = scores[0][1], 1, 0
         scores[0].append(cur_rank)
 
-        for idx, (score, _) in enumerate(scores[1:], 1):
+        for idx, (_, score) in enumerate(scores[1:], 1):
             if score == cur_score:
                 scores[idx].append(cur_rank)
                 offset += 1
@@ -32,10 +31,11 @@ class Rank:
         self.__calculate_pr()
 
         if random:
-            self.__random_rank(scores)
+            self.__random_rank(scores, masked=True)
+        
 
     def __random_rank(self, sorted_rank, masked=True):
-        """打亂第 1/3 名以下的成績"""
+        """打亂並遮蔽第 1/3 名以下的成績"""
         n = len(sorted_rank)
         bound = int(n / 3) - 1
         bound_rank = sorted_rank[bound][2]
