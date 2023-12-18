@@ -7,7 +7,7 @@ from .config import set_matplotlib_params
 
 
 class Figure:
-    output_path = os.path.join(".", "output_files")
+    output_path = os.path.join(os.getcwd(), 'output_files')
 
     def __init__(self, name, values, labels) -> None:
         self.name: str = name

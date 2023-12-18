@@ -10,11 +10,11 @@ from .Student import Student
 
 
 class CWTReport: # composition from Both Info and Student
-    output_path = os.path.join(".", "output_files")
+    output_path = os.path.join(os.getcwd(), 'output_files')
 
     def __init__(self, student, info) -> None:
         self.student: Student = student
-        self.info:Info = info
+        self.info: Info = info
         self.report = None
 
     def open_template(self, file_name):
@@ -81,7 +81,6 @@ class CWTReport: # composition from Both Info and Student
 
         figure = Figure(name='老師', values=values, labels=self.student.error_analysis.keys())
         return figure.path, average_corr_each_student
-
 
     def generate_teacher_report(self):
         template = Template(self.open_template('teacher_report_template.html'))
