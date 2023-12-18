@@ -33,7 +33,6 @@ class Rank:
         if random:
             self.__random_rank(scores, masked=True)
         
-
     def __random_rank(self, sorted_rank, masked=True):
         """打亂並遮蔽第 1/3 名以下的成績"""
         n = len(sorted_rank)
@@ -52,9 +51,10 @@ class Rank:
         self.sorted_rank = sorted_rank[:bound + 1] + lowers
 
     def __calculate_pr(self):
-        """取得前標、均標等"""
+        """取得前標、均標等，排名採四捨五入"""
         n = len(self.students)
-        self.pr88 = self.sorted_rank[round(n * (1 - 0.88)) - 1][1]
-        self.pr75 = self.sorted_rank[round(n * (1 - 0.75)) - 1][1]
-        self.pr50 = self.sorted_rank[round(n * (1 - 0.5)) - 1][1]
-        self.pr25 = self.sorted_rank[round(n * (1 - 0.25)) - 1][1]
+
+        self.pr88 = self.sorted_rank[round(decimal.Decimal(str(n * (1 - 0.88)))) - 1][1]
+        self.pr75 = self.sorted_rank[round(decimal.Decimal(str(n * (1 - 0.75)))) - 1][1]
+        self.pr50 = self.sorted_rank[round(decimal.Decimal(str(n * (1 - 0.5)))) - 1][1]
+        self.pr25 = self.sorted_rank[round(decimal.Decimal(str(n * (1 - 0.25)))) - 1][1]

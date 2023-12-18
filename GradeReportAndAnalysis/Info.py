@@ -16,7 +16,7 @@ class Info:
         self.students: list[Student] = []
         self.title: str
         self.level: str
-        self.date = ''
+        self.date: str
 
         self.__read_excel(file_name)
         self.rank: Rank
@@ -32,7 +32,7 @@ class Info:
             self.questions.append(QuestionVO(qnum, desc, cate, ans))
         self.title = pg1['標題'][0]
         self.level = pg1['級別'][0]
-        self.date = pg1['測驗日期'][0]
+        self.date = pg1['測驗日期'][0].strftime("%Y/%m/%d")
     
     def __read_pg23(self, pg2, pg3):
         _, *names = pg2.columns

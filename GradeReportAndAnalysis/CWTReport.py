@@ -31,7 +31,7 @@ class CWTReport: # composition from Both Info and Student
         self.student.draw_figure()
         self.report = template.render(
             title = self.info.title,
-            date = self.info.date.strftime("%Y/%m/%d"),
+            date = self.info.date,
             level = self.info.level,
 
             name = self.student.name,
@@ -91,7 +91,7 @@ class CWTReport: # composition from Both Info and Student
 
         self.report = template.render(
             title = self.info.title,
-            date = self.info.date.strftime("%Y/%m/%d"),
+            date = self.info.date,
             level = self.info.level,
 
             name = self.student.name,
