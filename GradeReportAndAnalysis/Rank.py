@@ -10,8 +10,8 @@ class Rank:
         self.pr50: decimal.Decimal
         self.pr25: decimal.Decimal
     
-    def calculate_rank(self, masked=False, random=False):
-        scores = [[student.masked_name if masked else student.name, student.score] for student in self.students]
+    def calculate_rank(self, mask_name=False, random_rank=False, hide_rank=False):
+        scores = [[student.masked_name if mask_name else student.name, student.score] for student in self.students]
         scores.sort(key=lambda x: x[1], reverse=True)
 
         cur_score, cur_rank, offset = scores[0][1], 1, 0
@@ -30,10 +30,12 @@ class Rank:
         self.sorted_rank = scores
         self.__calculate_pr()
 
-        if random:
-            self.__random_rank(scores, masked=True)
-        
-    def __random_rank(self, sorted_rank, masked=True):
+        if random_rank:
+            self.__random_rank()
+        if hide_rank:
+            self.__hide_rank()
+    
+    def __find_onethird_bound(self, sorted_rank):
         """打亂並遮蔽第 1/3 名以下的成績"""
         n = len(sorted_rank)
         bound = int(n / 3) - 1
@@ -43,12 +45,22 @@ class Rank:
             if cur_rk == bound_rank and cur_rk != next_rk:
                 bound = idx
                 break
-        lowers = sorted_rank[bound + 1:]
+        return bound
+
+    def __random_rank(self):
+        """打亂第 1/3 名以下的成績"""
+        bound = self.__find_onethird_bound(self.sorted_rank)
+        lowers = self.sorted_rank[bound + 1:]
         random.shuffle(lowers)
-        if masked:
-            for idx in range(len(lowers)):
-                lowers[idx][2] = ''
-        self.sorted_rank = sorted_rank[:bound + 1] + lowers
+        self.sorted_rank = self.sorted_rank[:bound + 1] + lowers
+
+    def __hide_rank(self):
+        """遮蔽 1/3 名以下的成績"""
+        bound = self.__find_onethird_bound(self.sorted_rank)
+        lowers = self.sorted_rank[bound + 1:]
+        for idx in range(len(lowers)):
+            lowers[idx][2] = ''
+        self.sorted_rank = self.sorted_rank[:bound + 1] + lowers
 
     def __calculate_pr(self):
         """取得前標、均標等，排名採四捨五入"""

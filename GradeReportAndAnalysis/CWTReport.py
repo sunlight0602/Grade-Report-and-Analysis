@@ -26,7 +26,7 @@ class CWTReport: # composition from Both Info and Student
     
     def generate_student_report(self):
         template = Template(self.open_template('student_report_template.html'))
-        self.info.rank.calculate_rank(masked=True, random=True)
+        self.info.rank.calculate_rank(mask_name=True, random_rank=True, hide_rank=True)
         
         self.student.draw_figure()
         self.report = template.render(
@@ -85,7 +85,7 @@ class CWTReport: # composition from Both Info and Student
     def generate_teacher_report(self):
         template = Template(self.open_template('teacher_report_template.html'))
         
-        self.info.rank.calculate_rank(masked=False, random=False)
+        self.info.rank.calculate_rank()
         correct_num, acc = self.get_accuracy_for_each_question()
         teacher_fig_path, avg_each_std = self.get_teacher_figure()
 
