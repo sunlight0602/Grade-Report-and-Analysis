@@ -19,7 +19,7 @@ class Info:
         self.date: str
 
         self.__read_excel(file_name)
-        self.rank: Rank
+        self.rank: Rank = None
         
     def __read_excel(self, file_name):
         pages = pd.read_excel(os.path.join(Info.input_path, file_name), sheet_name=None, keep_default_na=False)
@@ -41,35 +41,8 @@ class Info:
             student.conditions = [cond for cond in list(pg3[name]) if cond]
             self.students.append(student)
 
-    def calculate_score(self):
-        n = len(self.questions)
-        for student in self.students:
-            # TODO: Test: number of problems is the same as number of answers
-            # TODO: Feature: sort problems and answers by idx
-            correct = 0
-
-            for idx, (s_ans, q_ans) in enumerate(zip(student.answers, self.questions)):
-                if s_ans.quest_num == q_ans.quest_num:
-                    category = student.error_analysis[q_ans.category]
-                    if s_ans.answer == q_ans.answer:
-                        correct += 1
-                        category.correct += 1
-                        if student.answers[idx].quest_num == q_ans.quest_num:
-                            student.answers[idx].correction = '.'
-                        else:
-                            pass # rais error
-                    else:
-                        if student.answers[idx].quest_num == q_ans.quest_num:
-                            student.answers[idx].correction = q_ans.answer
-                        else:
-                            pass # raise error
-                    category.total += 1
-                else:
-                    # TODO: Raise error
-                    pass
-
-            student.score = round(decimal.Decimal(str(correct / n)) * 100)
-
-            student.analyze_error()
-    
-        self.rank = Rank(self.students)
+    def get_rank(self):
+        if not self.rank:
+            for student in self.students:
+                student.calculate_score(questions=self.questions)
+            self.rank = Rank(self.students)

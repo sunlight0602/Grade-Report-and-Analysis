@@ -28,7 +28,7 @@ class Student:
             return name[0] + 'Ｏ' * (len(name) - 1)
         return f"{name[0]}{'Ｏ' * (len(name) - 2)}{name[-1]}"       
 
-    def analyze_error(self):
+    def __analyze_error(self):
         for error in self.error_analysis.values():
             error.calculate_percentage()
 
@@ -37,3 +37,19 @@ class Student:
         figure = Figure(name=self.name, values=values, labels=self.error_analysis.keys())
         self.figure = figure
 
+    def calculate_score(self, questions):
+        n = len(questions)
+        correct = 0
+
+        for s_ans, question in zip(self.answers, questions):
+            if s_ans.quest_num == question.quest_num:
+                self.error_analysis[question.category].total += 1
+                if s_ans.answer == question.answer:
+                    correct += 1
+                    self.error_analysis[question.category].correct += 1
+                    s_ans.correction = '.'
+                else:
+                    s_ans.correction = s_ans.answer
+        
+        self.score = round(decimal.Decimal(str(correct / n)) * 100)
+        self.__analyze_error()

@@ -2,7 +2,7 @@ from GradeReportAndAnalysis.Info import Info
 from GradeReportAndAnalysis.CWTReport import CWTReport
 
 info = Info(file_name="1214_第２次全民中檢模擬考.xlsx")
-info.calculate_score()
+info.get_rank()
 
 for student in info.students:
     cwt_report = CWTReport(student, info)
