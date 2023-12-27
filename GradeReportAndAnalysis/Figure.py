@@ -40,4 +40,4 @@ class Figure:
         ax.grid(True) # 添加網格線
 
         plt.savefig(os.path.join(self.output_path, 'static', f'{self.name}.png'))
-        self.path = os.path.join(os.getcwd(), 'static', f'{self.name}.png')
+        self.path = os.path.join(self.output_path, 'static', f'{self.name}.png')

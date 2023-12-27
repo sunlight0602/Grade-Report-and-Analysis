@@ -8,8 +8,8 @@ from .Rank import Rank
 from .Student import Student, StudentAnswerVO
 
 class Info:
-    input_path = os.path.join(".", "input_files")
-    output_path = os.path.join(".", "output_files")
+    input_path = os.path.join(os.getcwd(), "input_files")
+    output_path = os.path.join(os.getcwd(), "output_files")
 
     def __init__(self, file_name) -> None:
         self.questions: list[QuestionVO] = []
@@ -22,13 +22,12 @@ class Info:
         self.rank: Rank
         
     def __read_excel(self, file_name):
-        pages = pd.read_excel(os.path.join(Info.input_path, file_name), sheet_name=None)
+        pages = pd.read_excel(os.path.join(Info.input_path, file_name), sheet_name=None, keep_default_na=False)
         self.__read_pg1(pages['題目與答案'])
         self.__read_pg23(pages['學生作答'], pages['學生畫卡'])
     
     def __read_pg1(self, pg1):
         for qnum, desc, cate, ans in zip(list(pg1['題號']), list(pg1['題目']), list(pg1['單元名稱']), list(pg1['解答'])):
-            desc = '' if pd.isnull(desc) else desc
             self.questions.append(QuestionVO(qnum, desc, cate, ans))
         self.title = pg1['標題'][0]
         self.level = pg1['級別'][0]
@@ -39,7 +38,7 @@ class Info:
         for name in names:
             student = Student(name)
             student.answers = [StudentAnswerVO(qnum, ans) for qnum, ans in zip(pg2['學生／題號'], pg2[name])]
-            student.conditions = [s for s in list(pg3[name]) if not pd.isnull(s)]
+            student.conditions = [cond for cond in list(pg3[name]) if cond]
             self.students.append(student)
 
     def calculate_score(self):

@@ -41,7 +41,7 @@ def test_draw_figure(test_case_1):
     assert student.figure.name == ans['name'], f'Figure name error, should be {ans["name"]}'
     assert student.figure.values == ans['percentages'], "Figure values not correct"
     assert student.figure.labels == ans['labels'], "Figure labels not correct"
-    assert student.figure.path == os.path.join(os.getcwd(), 'static', f'{ans["name"]}.png'), "Figure read path not correct"
+    assert student.figure.path == os.path.join(os.getcwd(), 'output_files', 'static', f'{ans["name"]}.png'), "Figure read path not correct"
  
 @pytest.mark.parametrize("name, expected_masked_name", [
     ('沈健康的魚', '沈ＯＯＯ魚'),
