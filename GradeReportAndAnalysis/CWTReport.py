@@ -28,7 +28,7 @@ class CWTReport: # composition from Both Info and Student
         template = Template(self.open_template('student_report_template.html'))
         self.info.rank.calculate_rank(mask_name=True, random_rank=True, hide_rank=True)
         
-        self.student.draw_figure()
+        self.student.get_figure()
         self.report = template.render(
             title = self.info.title,
             date = self.info.date,

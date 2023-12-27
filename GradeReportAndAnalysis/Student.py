@@ -21,7 +21,6 @@ class Student:
 
         self.error_analysis = collections.defaultdict(ErrorAnalysisVO)
         self.figure: Figure
-        self.report = None
 
     def __mask_name(self, name):
         if len(name) <= 2:
@@ -32,7 +31,7 @@ class Student:
         for error in self.error_analysis.values():
             error.calculate_percentage()
 
-    def draw_figure(self):
+    def get_figure(self):
         values = [err.percentage for err in self.error_analysis.values()]
         figure = Figure(name=self.name, values=values, labels=self.error_analysis.keys())
         self.figure = figure
