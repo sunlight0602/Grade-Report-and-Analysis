@@ -39,10 +39,5 @@ class Info:
             student = Student(name)
             student.answers = [StudentAnswerVO(qnum, ans) for qnum, ans in zip(pg2['學生／題號'], pg2[name])]
             student.conditions = [cond for cond in list(pg3[name]) if cond]
+            student.calculate_score(self.questions)
             self.students.append(student)
-
-    def get_rank(self):
-        if not self.rank:
-            for student in self.students:
-                student.calculate_score(questions=self.questions)
-            self.rank = Rank(self.students)

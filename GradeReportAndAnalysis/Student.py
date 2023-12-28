@@ -41,14 +41,13 @@ class Student:
         correct = 0
 
         for s_ans, question in zip(self.answers, questions):
-            if s_ans.quest_num == question.quest_num:
-                self.error_analysis[question.category].total += 1
-                if s_ans.answer == question.answer:
-                    correct += 1
-                    self.error_analysis[question.category].correct += 1
-                    s_ans.correction = '.'
-                else:
-                    s_ans.correction = s_ans.answer
+            self.error_analysis[question.category].total += 1
+            if s_ans.answer == question.answer:
+                correct += 1
+                self.error_analysis[question.category].correct += 1
+                s_ans.correction = '.'
+            else:
+                s_ans.correction = s_ans.answer
         
         self.score = round(decimal.Decimal(str(correct / n)) * 100)
         self.__analyze_error()

@@ -46,36 +46,32 @@ def test_case_2():
     }
     return Rank(ranks), ans
 
-def test_ranking(test_case_1, test_case_2):
+def test_calculate_rank(test_case_1, test_case_2):
     for test_case in [test_case_1, test_case_2]:
         rank, ans = test_case
         rank.calculate_rank()
         names, scores, ranks = [], [], []
-        for name, score, r in rank.sorted_rank:
-            names.append(name)
-            scores.append(score)
-            ranks.append(r)
+        for std, rk in rank.sorted_rank:
+            names.append(std.name)
+            scores.append(std.score)
+            ranks.append(rk)
         assert names == ans['sorted_names'], 'Ranking error'
         assert scores == ans['sorted_scores'], 'Ranking error'
         assert ranks == ans['sorted_ranks'], 'Ranking error'
 
-def test_mask_name(test_case_1):
-    rank, ans = test_case_1
-    rank.calculate_rank(mask_name=True)
-    names = [name for name, _, _ in rank.sorted_rank]
-    assert names == ans['sorted_masked_names'], 'Name mask error'
-
 def test_random_rank(test_case_1):
     rank, ans = test_case_1
-    rank.calculate_rank(random_rank=True)
-    names = [name for name, _, _ in rank.sorted_rank]
+    rank.calculate_rank()
+    rank.random_rank()
+    names = [std.name for std, _ in rank.sorted_rank]
     assert names != ans['sorted_names'], 'Ranking random error'
 
 def test_hide_rank(test_case_1, test_case_2):
     for test_case in [test_case_1, test_case_2]:
         rank, ans = test_case
-        rank.calculate_rank(hide_rank=True)
-        ranks = [rank for _, _, rank in rank.sorted_rank]
+        rank.calculate_rank()
+        rank.hide_rank()
+        ranks = [rk for _, rk in rank.sorted_rank]
         assert ranks == ans['sorted_hide_ranks'], 'Hide ranking error'
 
 def test_pr(test_case_1, test_case_2):

@@ -6,15 +6,22 @@ from jinja2 import Template
 
 from .Figure import Figure
 from .Info import Info
+from .Rank import Rank
 from .Student import Student
 
 
-class CWTReport: # composition from Both Info and Student
+class CWTReport: # composition from Info, Student, and Rank
     output_path = os.path.join(os.getcwd(), 'output_files')
 
-    def __init__(self, student, info) -> None:
+    def __init__(self, student, info, rank) -> None:
         self.student: Student = student
+
         self.info: Info = info
+        self.title: str = info.title
+        self.level: str = info.level
+        self.date: str = info.date
+
+        self.rank: Rank = rank
         self.report = None
 
     def open_template(self, file_name):
@@ -26,13 +33,14 @@ class CWTReport: # composition from Both Info and Student
     
     def generate_student_report(self):
         template = Template(self.open_template('student_report_template.html'))
-        self.info.rank.calculate_rank(mask_name=True, random_rank=True, hide_rank=True)
+        self.rank.hide_rank()
+        self.rank.random_rank()
         
         self.student.get_figure()
         self.report = template.render(
-            title = self.info.title,
-            date = self.info.date,
-            level = self.info.level,
+            title = self.title,
+            date = self.date,
+            level = self.level,
 
             name = self.student.name,
             score = self.student.score,
@@ -44,11 +52,11 @@ class CWTReport: # composition from Both Info and Student
             fig_path = self.student.figure.path,
             error_analysis = self.student.error_analysis,
 
-            pr88 = self.info.rank.pr88,
-            pr75 = self.info.rank.pr75,
-            pr50 = self.info.rank.pr50,
-            pr25 = self.info.rank.pr25,
-            ranking = self.info.rank.sorted_rank
+            pr88 = self.rank.pr88,
+            pr75 = self.rank.pr75,
+            pr50 = self.rank.pr50,
+            pr25 = self.rank.pr25,
+            ranking = [[std.masked_name, std.score, rank] for std, rank in self.rank.sorted_rank],
         )
 
         with open(os.path.join(self.output_path, self.student.name + '.html'), 'w') as f:
@@ -84,15 +92,14 @@ class CWTReport: # composition from Both Info and Student
 
     def generate_teacher_report(self):
         template = Template(self.open_template('teacher_report_template.html'))
-        
-        self.info.rank.calculate_rank()
+        self.rank.calculate_rank()
         correct_num, acc = self.get_accuracy_for_each_question()
         teacher_fig_path, avg_each_std = self.get_teacher_figure()
 
         self.report = template.render(
-            title = self.info.title,
-            date = self.info.date,
-            level = self.info.level,
+            title = self.title,
+            date = self.date,
+            level = self.level,
 
             name = self.student.name,
             score = self.student.score,
@@ -108,11 +115,11 @@ class CWTReport: # composition from Both Info and Student
             avg_each_std = avg_each_std,
             zip = zip,
 
-            pr88 = self.info.rank.pr88,
-            pr75 = self.info.rank.pr75,
-            pr50 = self.info.rank.pr50,
-            pr25 = self.info.rank.pr25,
-            ranking = self.info.rank.sorted_rank
+            pr88 = self.rank.pr88,
+            pr75 = self.rank.pr75,
+            pr50 = self.rank.pr50,
+            pr25 = self.rank.pr25,
+            ranking = [[std.name, std.score, rank] for std, rank in self.rank.sorted_rank]
         )
 
         with open(os.path.join(self.output_path, '老師.html'), 'w') as f:
