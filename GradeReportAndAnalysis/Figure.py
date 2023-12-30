@@ -14,14 +14,15 @@ class Figure:
         self.values = values
         self.labels = labels
         self.path: str
-        
+
         self.draw_figure()
 
     def draw_figure(self):
         set_matplotlib_params()
 
         values = self.values
-        angles = np.linspace(0, 2 * np.pi, len(values), endpoint=False) # 設置每個數據點的顯示位置，在雷達圖上用角度表示
+        # 設置每個數據點的顯示位置，在雷達圖上用角度表示
+        angles = np.linspace(0, 2 * np.pi, len(values), endpoint=False)
 
         # 拼接數據首尾，使圖形中線條封閉
         values = np.concatenate((values, [values[0]]))
@@ -30,14 +31,15 @@ class Figure:
         # 繪圖
         fig = plt.figure()
         ax = fig.add_subplot(111, polar=True)
-        ax.plot(angles, values, 'o-', linewidth=2) # 繪製折線圖
-        ax.fill(angles, values, alpha=0.25) # 填充顏色
+        ax.plot(angles, values, 'o-', linewidth=2)  # 繪製折線圖
+        ax.fill(angles, values, alpha=0.25)  # 填充顏色
 
         # 設置圖標上的角度劃分刻度，爲每個數據點處添加標籤
-        ax.set_thetagrids(angles=(0,60,120,180,240,300), labels=self.labels, fontsize=14)
+        ax.set_thetagrids(angles=(0, 60, 120, 180, 240, 300),
+                          labels=self.labels, fontsize=14)
 
-        ax.set_ylim(0, 100) # 設置雷達圖的範圍
-        ax.grid(True) # 添加網格線
+        ax.set_ylim(0, 100)  # 設置雷達圖的範圍
+        ax.grid(True)  # 添加網格線
 
-        plt.savefig(os.path.join(self.output_path, 'static', f'{self.name}.png'))
         self.path = os.path.join(self.output_path, 'static', f'{self.name}.png')
+        plt.savefig(self.path)

@@ -16,7 +16,7 @@ class Student:
         self.masked_name: str = self.__mask_name(self.name)
         self.answers: list[StudentAnswerVO] = []
         self.conditions = []
-    
+
         self.score: decimal.Decimal = None
 
         self.error_analysis = collections.defaultdict(ErrorAnalysisVO)
@@ -25,7 +25,7 @@ class Student:
     def __mask_name(self, name):
         if len(name) <= 2:
             return name[0] + 'Ｏ' * (len(name) - 1)
-        return f"{name[0]}{'Ｏ' * (len(name) - 2)}{name[-1]}"       
+        return f"{name[0]}{'Ｏ' * (len(name) - 2)}{name[-1]}"
 
     def __analyze_error(self):
         for error in self.error_analysis.values():
@@ -33,7 +33,8 @@ class Student:
 
     def get_figure(self):
         values = [err.percentage for err in self.error_analysis.values()]
-        figure = Figure(name=self.name, values=values, labels=self.error_analysis.keys())
+        figure = Figure(name=self.name, values=values,
+                        labels=self.error_analysis.keys())
         self.figure = figure
 
     def calculate_score(self, questions):
@@ -48,6 +49,6 @@ class Student:
                 s_ans.correction = '.'
             else:
                 s_ans.correction = s_ans.answer
-        
+
         self.score = round(decimal.Decimal(str(correct / n)) * 100)
         self.__analyze_error()

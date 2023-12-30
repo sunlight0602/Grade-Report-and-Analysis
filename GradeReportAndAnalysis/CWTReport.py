@@ -9,7 +9,8 @@ class CWTReport:
 
     def open_template(self, file_name):
         path = os.path.join('templates', file_name)
-        template_path = pkg_resources.resource_filename('GradeReportAndAnalysis', path)
+        template_path = pkg_resources.resource_filename(
+            'GradeReportAndAnalysis', path)
         with open(template_path, 'r', encoding='utf-8') as file:
             template = file.read()
         return Template(template)

@@ -1,6 +1,7 @@
 import decimal
 import random
 
+
 class Rank:
     def __init__(self, students) -> None:
         self.students = students
@@ -9,7 +10,7 @@ class Rank:
         self.pr75: decimal.Decimal
         self.pr50: decimal.Decimal
         self.pr25: decimal.Decimal
-    
+
     def calculate_rank(self):
         sorted_students = self.students[:]
         sorted_students.sort(key=lambda x: x.score, reverse=True)
@@ -28,14 +29,14 @@ class Rank:
                 ranks[idx] = cur_rank + offset
                 cur_rank += offset
                 offset = 0
-        
+
         self.sorted_rank = {
             'students': [student for student, _ in zip(sorted_students, ranks)],
             'rank': [rank for _, rank in zip(sorted_students, ranks)]
         }
-            
+
         self.__calculate_pr()
-    
+
     def __find_onethird_bound(self, sorted_rank):
         """打亂並遮蔽第 1/3 名以下的成績"""
         n = len(self.students)

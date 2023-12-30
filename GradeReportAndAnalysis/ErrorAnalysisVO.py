@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 import decimal
 
+
 @dataclass
 class ErrorAnalysisVO:
     correct: int = 0
@@ -8,4 +9,4 @@ class ErrorAnalysisVO:
     percentage: decimal.Decimal = field(init=False)
 
     def calculate_percentage(self):
-        self.percentage = round(decimal.Decimal(str(self.correct / self.total)) * 100, 1) 
+        self.percentage = round(decimal.Decimal(str(self.correct / self.total)) * 100, 1)
