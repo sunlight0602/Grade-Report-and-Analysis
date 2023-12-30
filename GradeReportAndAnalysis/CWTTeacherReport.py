@@ -55,6 +55,10 @@ class CWTTeacherReport(CWTReport): # composition from Info, Student, and Rank
         correct_num, acc = self.__get_accuracy_for_each_question()
         teacher_fig_path, avg_each_std = self.__get_teacher_figure()
 
+        ranking = []
+        for std, rank in zip(self.rank.sorted_rank['students'], self.rank.sorted_rank['rank']):
+            ranking.append([std.name, std.score, rank])
+
         self.report = template.render(
             title = self.title,
             date = self.date,
@@ -74,7 +78,7 @@ class CWTTeacherReport(CWTReport): # composition from Info, Student, and Rank
             pr75 = self.rank.pr75,
             pr50 = self.rank.pr50,
             pr25 = self.rank.pr25,
-            ranking = [[std.name, std.score, rank] for std, rank in self.rank.sorted_rank]
+            ranking = ranking,
         )
 
         with open(os.path.join(self.output_path, f'{self.name}.html'), 'w') as f:

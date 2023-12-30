@@ -25,6 +25,10 @@ class CWTStudentReport(CWTReport): # composition from Info, Student, and Rank
         self.rank.hide_rank()
         self.rank.random_rank()
         self.student.get_figure()
+
+        ranking = []
+        for std, rank in zip(self.rank.sorted_rank['students'], self.rank.sorted_rank['rank']):
+            ranking.append([std.masked_name, std.score, rank])
         
         self.report = template.render(
             title = self.title,
@@ -45,7 +49,7 @@ class CWTStudentReport(CWTReport): # composition from Info, Student, and Rank
             pr75 = self.rank.pr75,
             pr50 = self.rank.pr50,
             pr25 = self.rank.pr25,
-            ranking = [[std.masked_name, std.score, rank] for std, rank in self.rank.sorted_rank],
+            ranking = ranking,
         )
 
         with open(os.path.join(self.output_path, self.student.name + '.html'), 'w') as f:
