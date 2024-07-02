@@ -5,7 +5,7 @@ from .CWTReport import CWTReport
 from .info import Info
 from .QuestionVO import QuestionVO
 from .Rank import Rank
-from .Student import Student
+from .student import Student
 
 
 class CWTStudentReport(CWTReport):  # composition from Info, Student, and Rank

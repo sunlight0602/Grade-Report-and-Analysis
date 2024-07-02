@@ -12,7 +12,7 @@ class Student:
 
     def __init__(self, name) -> None:
         self.name: str = name
-        self.masked_name: str = self.__mask_name(self.name)
+        self.masked_name: str = self._mask_name(self.name)
         self.answers: list[StudentAnswerVO] = []
         self.conditions = []
 
@@ -21,7 +21,7 @@ class Student:
         self.error_analysis = collections.defaultdict(ErrorAnalysis)
         self.figure: Figure
 
-    def __mask_name(self, name):
+    def _mask_name(self, name):
         if len(name) <= 2:
             return name[0] + "Ｏ" * (len(name) - 1)
         return f"{name[0]}{'Ｏ' * (len(name) - 2)}{name[-1]}"

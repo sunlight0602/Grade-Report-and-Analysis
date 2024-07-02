@@ -6,7 +6,7 @@ import pandas as pd
 
 from .QuestionVO import QuestionVO
 from .Rank import Rank
-from .Student import Student, StudentAnswerVO
+from .student import Student, StudentAnswerVO
 
 
 class Info:
