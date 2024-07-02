@@ -3,12 +3,12 @@ import os
 
 from .CWTReport import CWTReport
 from .Figure import Figure
-from .Info import Info
+from .info import Info
 from .Rank import Rank
 
 
 class CWTTeacherReport(CWTReport):  # composition from Info, Student, and Rank
-    name = '老師'
+    name = "老師"
 
     def __init__(self, student, info, rank) -> None:
         self.error_analysis = student.error_analysis
@@ -28,7 +28,7 @@ class CWTTeacherReport(CWTReport):  # composition from Info, Student, and Rank
 
         for student in students:
             for idx, ans in enumerate(student.answers):
-                if ans.correction == '.':
+                if ans.correction == ".":
                     correct[idx] += 1
 
         acc = []
@@ -45,24 +45,27 @@ class CWTTeacherReport(CWTReport):  # composition from Info, Student, and Rank
                 corrects[idx] += err.correct
                 quest_total[idx] = err.total * n
 
-        avg_crt = [round(decimal.Decimal(str(crt/n)), 2) for crt in corrects]
+        avg_crt = [round(decimal.Decimal(str(crt / n)), 2) for crt in corrects]
 
         values = []
         for corr, q_total in zip(corrects, quest_total):
             values.append(round(decimal.Decimal(str(corr / q_total)) * 100))
 
-        figure = Figure(name=self.name, values=values,
-                        labels=self.error_analysis.keys())
+        figure = Figure(
+            name=self.name, values=values, labels=self.error_analysis.keys()
+        )
         return figure.path, avg_crt
 
     def generate_teacher_report(self):
-        template = self.open_template('teacher_report_template.html')
+        template = self.open_template("teacher_report_template.html")
         self.rank.calculate_rank()
         correct_num, acc = self.__get_accuracy_for_each_question()
         teacher_fig_path, avg_each_std = self.__get_teacher_figure()
 
         ranking = []
-        for std, rank in zip(self.rank.sorted_rank['students'], self.rank.sorted_rank['rank']):
+        for std, rank in zip(
+            self.rank.sorted_rank["students"], self.rank.sorted_rank["rank"]
+        ):
             ranking.append([std.name, std.score, rank])
 
         self.report = template.render(
@@ -84,6 +87,6 @@ class CWTTeacherReport(CWTReport):  # composition from Info, Student, and Rank
             ranking=ranking,
         )
 
-        wrt_path = os.path.join(self.output_path, f'{self.name}.html')
-        with open(wrt_path, 'w') as f:
+        wrt_path = os.path.join(self.output_path, f"{self.name}.html")
+        with open(wrt_path, "w") as f:
             f.write(self.report)

@@ -1,8 +1,13 @@
+""""""
+
+from io import BytesIO
+
+import openpyxl
 import pytest
 from fastapi.testclient import TestClient
-from io import BytesIO
-import openpyxl
-from GradeReportAndAnalysis.Server import app  # Ensure this import matches your application structure
+
+from GradeReportAndAnalysis.Server import \
+    app  # Ensure this import matches your application structure
 
 client = TestClient(app)
 
@@ -23,8 +28,13 @@ def sample_xlsx_file():
 def test_upload_file(sample_xlsx_file):
     response = client.post(
         "/uploadfile/",
-        files={"file": (
-            "test.xlsx", sample_xlsx_file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
+        files={
+            "file": (
+                "test.xlsx",
+                sample_xlsx_file,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        },
     )
     assert response.status_code == 200
     json_response = response.json()
@@ -35,7 +45,7 @@ def test_upload_file(sample_xlsx_file):
 def test_upload_invalid_file():
     response = client.post(
         "/uploadfile/",
-        files={"file": ("test.txt", BytesIO(b"Invalid content"), "text/plain")}
+        files={"file": ("test.txt", BytesIO(b"Invalid content"), "text/plain")},
     )
     assert response.status_code == 400
     json_response = response.json()

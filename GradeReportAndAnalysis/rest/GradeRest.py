@@ -1,15 +1,18 @@
-from fastapi import UploadFile, File, HTTPException
-from fastapi.responses import JSONResponse
-import openpyxl
 import io
+
+import openpyxl
+from fastapi import File, HTTPException, UploadFile
+from fastapi.responses import JSONResponse
 
 from GradeReportAndAnalysis.Server import app
 
 
 @app.post("/uploadfile/")
 async def upload_file(file: UploadFile = File(...)):
-    if not file.filename.endswith('.xlsx'):
-        raise HTTPException(status_code=400, detail="Invalid file type. Only .xlsx files are allowed.")
+    if not file.filename.endswith(".xlsx"):
+        raise HTTPException(
+            status_code=400, detail="Invalid file type. Only .xlsx files are allowed."
+        )
 
     # Read the file content
     content = await file.read()
@@ -22,4 +25,6 @@ async def upload_file(file: UploadFile = File(...)):
         data.append(row)
         print(row)  # Example action: print each row
 
-    return JSONResponse(content={"message": "File processed successfully", "data": data})
+    return JSONResponse(
+        content={"message": "File processed successfully", "data": data}
+    )
