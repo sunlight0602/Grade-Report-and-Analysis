@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class QuestionVO:
+class Question:
     """Class that contains basic information about a question."""
 
     quest_num: int

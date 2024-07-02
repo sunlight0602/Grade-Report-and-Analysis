@@ -1,10 +1,10 @@
 import os
 from typing import List
 
-from .CWTReport import CWTReport
+from .cwt_report import CWTReport
 from .info import Info
-from .QuestionVO import QuestionVO
-from .Rank import Rank
+from .question import Question
+from .rank import Rank
 from .student import Student
 
 
@@ -12,7 +12,7 @@ class CWTStudentReport(CWTReport):  # composition from Info, Student, and Rank
     def __init__(self, student: Student, info: Info, rank: Rank) -> None:
         self.student: Student = student
 
-        self.questions: List[QuestionVO] = info.questions
+        self.questions: List[Question] = info.questions
         self.title: str = info.title
         self.level: str = info.level
         self.date: str = info.date

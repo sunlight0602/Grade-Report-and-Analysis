@@ -1,7 +1,7 @@
 import pytest
 
-from GradeReportAndAnalysis.Rank import Rank
-from GradeReportAndAnalysis.Student import Student
+from GradeReportAndAnalysis.rank import Rank
+from GradeReportAndAnalysis.student import Student
 
 
 def set_students_scores(names, scores):

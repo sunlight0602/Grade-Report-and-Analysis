@@ -4,9 +4,9 @@ import os
 
 import pandas as pd
 
-from .QuestionVO import QuestionVO
-from .Rank import Rank
-from .student import Student, StudentAnswerVO
+from .question import Question
+from .rank import Rank
+from .student import Student, StudentAnswer
 
 
 class Info:
@@ -16,7 +16,7 @@ class Info:
     output_path = os.path.join(os.getcwd(), "output_files")
 
     def __init__(self, file_name) -> None:
-        self.questions: list[QuestionVO] = []
+        self.questions: list[Question] = []
         self.students: list[Student] = []
         self.title: str
         self.level: str
@@ -41,7 +41,7 @@ class Info:
             list(pg1["單元名稱"]),
             list(pg1["解答"]),
         ):
-            self.questions.append(QuestionVO(qnum, desc, cate, ans))
+            self.questions.append(Question(qnum, desc, cate, ans))
         self.title = pg1["標題"][0]
         self.level = pg1["級別"][0]
         self.date = pg1["測驗日期"][0].strftime("%Y/%m/%d")
@@ -51,7 +51,7 @@ class Info:
         for name in names:
             student = Student(name)
             student.answers = [
-                StudentAnswerVO(qnum, ans)
+                StudentAnswer(qnum, ans)
                 for qnum, ans in zip(pg2["學生／題號"], pg2[name])
             ]
             student.conditions = [cond for cond in list(pg3[name]) if cond]

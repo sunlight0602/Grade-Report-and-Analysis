@@ -3,8 +3,8 @@ import decimal
 import os
 
 from .error_analysis import ErrorAnalysis
-from .Figure import Figure
-from .StudentAnswerVO import StudentAnswerVO
+from .figure import Figure
+from .student_answer import StudentAnswer
 
 
 class Student:
@@ -13,7 +13,7 @@ class Student:
     def __init__(self, name) -> None:
         self.name: str = name
         self.masked_name: str = self._mask_name(self.name)
-        self.answers: list[StudentAnswerVO] = []
+        self.answers: list[StudentAnswer] = []
         self.conditions = []
 
         self.score: decimal.Decimal = None

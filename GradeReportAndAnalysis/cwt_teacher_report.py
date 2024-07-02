@@ -1,10 +1,10 @@
 import decimal
 import os
 
-from .CWTReport import CWTReport
-from .Figure import Figure
+from .cwt_report import CWTReport
+from .figure import Figure
 from .info import Info
-from .Rank import Rank
+from .rank import Rank
 
 
 class CWTTeacherReport(CWTReport):  # composition from Info, Student, and Rank
