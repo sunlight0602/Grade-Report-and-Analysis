@@ -14,7 +14,8 @@ class Student:
         self.name: str = name
         self.masked_name: str = self._mask_name(self.name)
         self.answers: list[StudentAnswer] = []
-        self.conditions = []
+        self.conditions: list = []
+        self.speeds: list = []
 
         self.score: decimal.Decimal = None
 

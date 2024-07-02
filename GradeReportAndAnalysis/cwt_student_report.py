@@ -21,7 +21,7 @@ class CWTStudentReport(CWTReport):  # composition from Info, Student, and Rank
         self.report = None
 
     def generate_student_report(self):
-        template = self.open_template("student_report_template.html")
+        template = self.open_template("cwt_student_report_template.html")
         self.rank.hide_rank()
         self.rank.random_rank()
         self.student.get_figure()
@@ -39,6 +39,7 @@ class CWTStudentReport(CWTReport):  # composition from Info, Student, and Rank
             name=self.student.name,
             score=self.student.score,
             conditions=self.student.conditions,
+            speeds=self.student.speeds,
             q_answers=[question.answer for question in self.questions],
             s_answers=[answer.correction for answer in self.student.answers],
             fig_path=self.student.figure.path,
