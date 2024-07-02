@@ -1,12 +1,12 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
-    name='GradeReportAndAnalysis',
-    version='0.1',
+    name="GradeReportAndAnalysis",
+    version="0.1",
     packages=find_packages(),
     include_package_data=True,
     package_data={
-        'GradeReportAndAnalysis': ['templates/*.html'],
+        "GradeReportAndAnalysis": ["templates/*.html"],
     },
     # ... other setup parameters ...
 )

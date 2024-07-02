@@ -7,7 +7,7 @@ from .config import set_matplotlib_params
 
 
 class Figure:
-    output_path = os.path.join(os.getcwd(), 'output_files')
+    output_path = os.path.join(os.getcwd(), "output_files")
 
     def __init__(self, name, values, labels) -> None:
         self.name: str = name
@@ -31,15 +31,16 @@ class Figure:
         # 繪圖
         fig = plt.figure()
         ax = fig.add_subplot(111, polar=True)
-        ax.plot(angles, values, 'o-', linewidth=2)  # 繪製折線圖
+        ax.plot(angles, values, "o-", linewidth=2)  # 繪製折線圖
         ax.fill(angles, values, alpha=0.25)  # 填充顏色
 
         # 設置圖標上的角度劃分刻度，爲每個數據點處添加標籤
-        ax.set_thetagrids(angles=(0, 60, 120, 180, 240, 300),
-                          labels=self.labels, fontsize=14)
+        ax.set_thetagrids(
+            angles=(0, 60, 120, 180, 240, 300), labels=self.labels, fontsize=14
+        )
 
         ax.set_ylim(0, 100)  # 設置雷達圖的範圍
         ax.grid(True)  # 添加網格線
 
-        self.path = os.path.join(self.output_path, 'static', f'{self.name}.png')
+        self.path = os.path.join(self.output_path, "static", f"{self.name}.png")
         plt.savefig(self.path)
