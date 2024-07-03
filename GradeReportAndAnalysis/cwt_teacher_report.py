@@ -65,7 +65,9 @@ class CWTTeacherReport(CWTReport):  # composition from Info, Student, and Rank
     def generate_teacher_report(self):
         template = self.open_template("cwt_teacher_report_template.html")
         self.rank.calculate_rank()
-        correct_num, incorrect_num, correct_accuracy, incorrect_accuracy = self._get_accuracy_for_each_question()
+        correct_num, incorrect_num, correct_accuracy, incorrect_accuracy = (
+            self._get_accuracy_for_each_question()
+        )
         teacher_fig_path, avg_each_std = self.__get_teacher_figure()
 
         ranking = []
