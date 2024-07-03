@@ -51,6 +51,7 @@ class CWTStudentReport(CWTReport):  # composition from Info, Student, and Rank
             ranking=ranking,
         )
 
+        print(os.path.join(self.output_path, f"{self.student.name}.html"))
         wrt_path = os.path.join(self.output_path, f"{self.student.name}.html")
-        with open(wrt_path, "w") as f:
+        with open(wrt_path, encoding="utf-8", mode="w") as f:
             f.write(self.report)

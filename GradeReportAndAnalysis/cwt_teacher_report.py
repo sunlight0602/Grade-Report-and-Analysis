@@ -96,5 +96,5 @@ class CWTTeacherReport(CWTReport):  # composition from Info, Student, and Rank
         )
 
         wrt_path = os.path.join(self.output_path, f"{self.name}.html")
-        with open(wrt_path, "w") as f:
+        with open(wrt_path, encoding="utf-8", mode="w") as f:
             f.write(self.report)
