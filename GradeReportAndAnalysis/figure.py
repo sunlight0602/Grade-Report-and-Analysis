@@ -6,6 +6,7 @@ import numpy as np
 from .config import set_matplotlib_params
 
 
+
 class Figure:
     output_path = os.path.join(os.getcwd(), "output_files")
 
