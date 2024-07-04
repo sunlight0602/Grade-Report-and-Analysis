@@ -21,20 +21,26 @@ class CWTTeacherReport(CWTReport):  # composition from Info, Student, and Rank
         self.rank: Rank = rank
         self.report = None
 
-    def __get_accuracy_for_each_question(self):
+    def _get_accuracy_for_each_question(self):
         students = self.info.students
         n, m = len(students), len(self.info.questions)
         correct = [0] * m
+        incorrect = [0] * m
 
         for student in students:
             for idx, ans in enumerate(student.answers):
                 if ans.correction == ".":
                     correct[idx] += 1
+                else:
+                    incorrect[idx] += 1
 
-        acc = []
+        correct_accuracy = []
+        incorrect_accuracy = []
         for num in correct:
-            acc.append(round(decimal.Decimal(str(num / n)) * 100))
-        return correct, acc
+            acc = round(decimal.Decimal(str(num / n)) * 100)
+            correct_accuracy.append(acc)
+            incorrect_accuracy.append(100 - acc)
+        return correct, incorrect, correct_accuracy, incorrect_accuracy
 
     def __get_teacher_figure(self):
         n = len(self.info.students)
@@ -57,9 +63,11 @@ class CWTTeacherReport(CWTReport):  # composition from Info, Student, and Rank
         return figure.path, avg_crt
 
     def generate_teacher_report(self):
-        template = self.open_template("teacher_report_template.html")
+        template = self.open_template("cwt_teacher_report_template.html")
         self.rank.calculate_rank()
-        correct_num, acc = self.__get_accuracy_for_each_question()
+        correct_num, incorrect_num, correct_accuracy, incorrect_accuracy = (
+            self._get_accuracy_for_each_question()
+        )
         teacher_fig_path, avg_each_std = self.__get_teacher_figure()
 
         ranking = []
@@ -74,8 +82,8 @@ class CWTTeacherReport(CWTReport):  # composition from Info, Student, and Rank
             level=self.level,
             q_answers=[question.answer for question in self.info.questions],
             q_categories=[question.category[0] for question in self.info.questions],
-            q_accuracy=acc,
-            q_correct_num=correct_num,
+            q_accuracy=incorrect_accuracy,
+            q_incorrect_num=incorrect_num,
             fig_path=teacher_fig_path,
             error_analysis=self.error_analysis,
             avg_each_std=avg_each_std,
@@ -88,5 +96,5 @@ class CWTTeacherReport(CWTReport):  # composition from Info, Student, and Rank
         )
 
         wrt_path = os.path.join(self.output_path, f"{self.name}.html")
-        with open(wrt_path, "w") as f:
+        with open(wrt_path, encoding="utf-8", mode="w") as f:
             f.write(self.report)

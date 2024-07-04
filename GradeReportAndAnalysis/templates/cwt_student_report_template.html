@@ -27,6 +27,7 @@
                         <th>語文素養</th>
                         <th>檢定結果</th>
                         <th>畫卡狀況</th>
+                        <th>作答速度</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -34,9 +35,9 @@
                         <td class="align-middle">{{ name }}</td>
                         <td class="align-middle">{{ score }}</td>
                         {% if score >= 66 %}
-                        <td class="align-middle">語文素養 ☑ 通過 ☐ 未通過<br>
+                        <td class="align-middle">語文素養 <br>☑ 通過 <br>☐ 未通過<br>
                             {% else %}
-                        <td class="align-middle">語文素養 ☐ 通過 ☑ 未通過<br>
+                        <td class="align-middle">語文素養 <br>☐ 通過 <br>☑ 未通過<br>
                             {% endif %}
                         <td class="align-middle">
                             <div class="row align-middle">
@@ -80,6 +81,49 @@
                                     {% endif %}
                                 </div>
                                 </row>
+                        </td>
+                        <td class="align-middle">
+                            <div class="row align-middle">
+                                <div class="col align-middle">
+                                    {% if '表現良好' in speeds %}
+                                    ☑ 表現良好<br>
+                                    {% else %}
+                                    ☐ 表現良好<br>
+                                    {% endif %}
+
+                                    {% if '可再加快' in speeds %}
+                                    ☑ 可再加快<br>
+                                    {% else %}
+                                    ☐ 可再加快<br>
+                                    {% endif %}
+
+                                    {% if '未完成，須提升作答速度' in speeds %}
+                                    ☑ 未完成，<br>須提升作答速度
+                                    {% else %}
+                                    ☐ 未完成，<br>須提升作答速度
+                                    {% endif %}
+
+                                </div>
+                                <div class="col align-middle">
+                                    {% if '違反考試規則' in speeds %}
+                                    ☑ 違反考試規則<br>
+                                    {% else %}
+                                    ☐ 違反考試規則<br>
+                                    {% endif %}
+
+                                    {% if '容易分心，專注度待加強' in speeds %}
+                                    ☑ 容易分心，專注度待加強<br>
+                                    {% else %}
+                                    ☐ 容易分心，<br>專注度待加強<br>
+                                    {% endif %}
+
+                                    {% if '作答速度快，但沒有檢查習慣' in speeds %}
+                                    ☑ 作答速度快，<br>但沒有檢查習慣<br>
+                                    {% else %}
+                                    ☐ 作答速度快，<br>但沒有檢查習慣<br>
+                                    {% endif %}
+                                </div>
+                            </row>
                         </td>
                     </tr>
                 </tbody>
@@ -198,7 +242,14 @@
                         {% for name, score, rank in ranking %}
                         <tr>
                             <td>{{ name }}</td>
-                            <td>{{ score }}</td>
+                            <td>
+                                {{ score }}
+                                {% if score >= 66 %}
+                                （通過）
+                                    {% else %}
+                                （未通過）
+                                    {% endif %}
+                            </td>
                             <td>{{ rank }}</td>
                         </tr>
                         {% endfor %}

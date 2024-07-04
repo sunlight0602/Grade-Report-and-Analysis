@@ -32,7 +32,7 @@ class Info:
             keep_default_na=False,
         )
         self.__read_pg1(pages["題目與答案"])
-        self.__read_pg23(pages["學生作答"], pages["學生畫卡"])
+        self.__read_pg234(pages["學生作答"], pages["畫卡狀況"], pages["作答速度"])
 
     def __read_pg1(self, pg1):
         for qnum, desc, cate, ans in zip(
@@ -46,7 +46,7 @@ class Info:
         self.level = pg1["級別"][0]
         self.date = pg1["測驗日期"][0].strftime("%Y/%m/%d")
 
-    def __read_pg23(self, pg2, pg3):
+    def __read_pg234(self, pg2, pg3, pg4):
         _, *names = pg2.columns
         for name in names:
             student = Student(name)
@@ -55,5 +55,6 @@ class Info:
                 for qnum, ans in zip(pg2["學生／題號"], pg2[name])
             ]
             student.conditions = [cond for cond in list(pg3[name]) if cond]
+            student.speeds = [cond for cond in list(pg4[name]) if cond]
             student.calculate_score(self.questions)
             self.students.append(student)

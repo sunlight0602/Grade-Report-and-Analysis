@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="row">
-            <p class="h5"><strong>語文素養答題狀況：</strong></p>
+            <p><strong class="h5">語文素養答題狀況：</strong>（題型、正確答案、錯誤率、錯誤人數）</p>
             <table class="table table-bordered text-center table-sm">
                 <tbody>
                     <tr class="table-secondary">
@@ -39,9 +39,9 @@
                     </tr>
                     <tr style="font-size: 70% !important">
                         {% for q_acc in q_accuracy[:25] %}
-                            {% if q_acc == 100 %}
+                            {% if q_acc == 0 %}
                             <td>-</td>
-                            {% elif q_acc <= 50 %}
+                            {% elif q_acc >= 50 %}
                             <td style="color: red">{{ q_acc }}%</td>
                             {% else %}
                             <td>{{ q_acc }}%</td>
@@ -49,7 +49,7 @@
                         {% endfor %}
                     </tr>
                     <tr>
-                        {% for q_corr in q_correct_num[:25] %}
+                        {% for q_corr in q_incorrect_num[:25] %}
                         <td>{{ q_corr }}</td>
                         {% endfor %}
                     </tr>
@@ -71,9 +71,9 @@
                     </tr>
                     <tr style="font-size: 70% !important">
                         {% for q_acc in q_accuracy[25:] %}
-                            {% if q_acc == 100 %}
+                            {% if q_acc == 0 %}
                             <td>-</td>
-                            {% elif q_acc <= 50 %}
+                            {% elif q_acc >= 50 %}
                             <td style="color: red">{{ q_acc }}%</td>
                             {% else %}
                             <td>{{ q_acc }}%</td>
@@ -81,7 +81,7 @@
                         {% endfor %}
                     </tr>
                     <tr>
-                        {% for q_corr in q_correct_num[25:] %}
+                        {% for q_corr in q_incorrect_num[25:] %}
                         <td>{{ q_corr }}</td>
                         {% endfor %}
                     </tr>
@@ -158,7 +158,14 @@
                     {% for name, score, rank in ranking %}
                     <tr>
                         <td>{{ name }}</td>
-                        <td>{{ score }}</td>
+                        <td>
+                            {{ score }}
+                            {% if score >= 66 %}
+                            （通過）
+                                {% else %}
+                            （未通過）
+                                {% endif %}
+                        </td>
                         <td>{{ rank }}</td>
                     </tr>
                     {% endfor %}
