@@ -58,3 +58,4 @@ class Info:
             student.speeds = [cond for cond in list(pg4[name]) if cond]
             student.calculate_score(self.questions)
             self.students.append(student)
+

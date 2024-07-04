@@ -53,3 +53,4 @@ class Student:
 
         self.score = round(decimal.Decimal(str(correct / n)) * 100)
         self.__analyze_error()
+
