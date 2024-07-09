@@ -1,11 +1,13 @@
+"""test Student class"""
+
 import os
 from decimal import Decimal
 from unittest import TestCase
 
-from GradeReportAndAnalysis.error_analysis import ErrorAnalysis
-from GradeReportAndAnalysis.question import Question
-from GradeReportAndAnalysis.student import Student
-from GradeReportAndAnalysis.student_answer import StudentAnswer
+from src.GradeReportAndAnalysis.error_analysis import ErrorAnalysis
+from src.GradeReportAndAnalysis.question import Question
+from src.GradeReportAndAnalysis.student import Student
+from src.GradeReportAndAnalysis.student_answer import StudentAnswer
 
 
 class TestStudent(TestCase):
