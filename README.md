@@ -17,6 +17,16 @@ pip3 install -r python_code_quality.txt
 ```
 
 3. Run backend apis
+```
+./run_main.sh
+```
+On another terminal:
+```
+curl -X POST "http://localhost:8000/uploadfile/" \
+     -H "accept: application/json" \
+     -H "Content-Type: multipart/form-data" \
+     -F "file=@/Users/kyshen/Documents/Grade-Report-and-Analysis/input_files/1214.xlsx"
+```
 
 ## Developing
 

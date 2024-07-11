@@ -3,13 +3,20 @@
 import io
 
 import openpyxl
-from fastapi import File, HTTPException, UploadFile
+import pandas as pd
+from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 
-from src.main import app
+from src.GradeReportAndAnalysis.info import Info
+# from ..GradeReportAndAnalysis.info import Info
+
+# from src.GradeReportAndAnalysis.info import Info
+
+router = APIRouter()
 
 
-@app.post("/uploadfile/")
+# @app.post("/uploadfile/")
+@router.post("/uploadfile/")
 async def upload_file(file: UploadFile = File(...)):
     """process excel file and pass to database"""
     if not file.filename.endswith(".xlsx"):
@@ -21,6 +28,14 @@ async def upload_file(file: UploadFile = File(...)):
     content = await file.read()
     workbook = openpyxl.load_workbook(io.BytesIO(content))
     sheet = workbook.active
+
+    # Another read file content
+    # pages = pd.read_excel(
+    #     io=content,
+    #     sheet_name=None,
+    #     keep_default_na=False,
+    # )
+    info = Info(file_name="", excel_file=content, from_exe=False)
 
     # Process the data (example: print all rows)
     data = []

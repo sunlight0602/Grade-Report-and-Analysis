@@ -15,19 +15,32 @@ class Info:
     input_path = os.path.join(os.getcwd(), "input_files")
     output_path = os.path.join(os.getcwd(), "output_files")
 
-    def __init__(self, file_name) -> None:
+    def __init__(self, file_name, excel_file, from_exe=True) -> None:
         self.questions: list[Question] = []
         self.students: list[Student] = []
         self.title: str
         self.level: str
         self.date: str
 
-        self._read_excel(file_name)
+        if from_exe:
+            self._read_excel(file_name)
+        else:
+            self._read_excel_web(excel_file)
         self.rank: Rank = None
 
     def _read_excel(self, file_name):
         pages = pd.read_excel(
             os.path.join(Info.input_path, file_name),
+            sheet_name=None,
+            keep_default_na=False,
+        )
+        self.__read_pg1(pages["題目與答案"])
+        self.__read_pg234(pages["學生作答"], pages["畫卡狀況"], pages["作答速度"])
+
+    def _read_excel_web(self, excel_file):
+        """read excel from backend api"""
+        pages = pd.read_excel(
+            io=excel_file,
             sheet_name=None,
             keep_default_na=False,
         )
