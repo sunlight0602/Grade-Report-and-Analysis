@@ -1,14 +1,17 @@
+"""handle file upload"""
+
 import io
 
 import openpyxl
 from fastapi import File, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 
-from GradeReportAndAnalysis.Server import app
+from src.main import app
 
 
 @app.post("/uploadfile/")
 async def upload_file(file: UploadFile = File(...)):
+    """process excel file and pass to database"""
     if not file.filename.endswith(".xlsx"):
         raise HTTPException(
             status_code=400, detail="Invalid file type. Only .xlsx files are allowed."

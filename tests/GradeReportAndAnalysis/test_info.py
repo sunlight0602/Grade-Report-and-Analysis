@@ -1,9 +1,9 @@
-"""test Info class"""
+"""test info class"""
 
 import os
 from unittest import TestCase
 
-from GradeReportAndAnalysis.info import Info
+from src.GradeReportAndAnalysis.info import Info
 
 
 class TestInfo(TestCase):

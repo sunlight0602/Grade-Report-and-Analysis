@@ -28,4 +28,5 @@ cwt_teacher_report = CWTTeacherReport(student, info, rank)
 cwt_teacher_report.generate_teacher_report()
 
 from time import sleep
+
 sleep(10)

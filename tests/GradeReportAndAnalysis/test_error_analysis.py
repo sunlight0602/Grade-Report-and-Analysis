@@ -3,7 +3,7 @@
 from decimal import Decimal
 from unittest import TestCase
 
-from GradeReportAndAnalysis.error_analysis import ErrorAnalysis
+from src.GradeReportAndAnalysis.error_analysis import ErrorAnalysis
 
 
 class TestErrorAnalysis(TestCase):
